@@ -100,6 +100,7 @@ raw =
 raw_part =
     < [^ .|\\)(\[\]]+ > { $$ = STRING(ROCKRE_NODE_STRING, yytext, yyleng); }
     | esc '.' { $$ = STRING(ROCKRE_NODE_STRING, ".", 1); }
+    | esc 't' { $$ = STRING(ROCKRE_NODE_STRING, "\t", 1); }
 
 head = "^^" { $$ = NODE(ROCKRE_NODE_HEAD); }
 

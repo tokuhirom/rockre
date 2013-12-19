@@ -92,6 +92,10 @@ __END__
 --- expected: (string "a.")
 
 ===
+--- input: a\t
+--- expected: (string "a	")
+
+===
 --- input: あいう
 --- expected: (string "あいう")
 
