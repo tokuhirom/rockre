@@ -1,27 +1,24 @@
 use strict;
 use warnings;
-use utf8;
 use Test::More;
+use Test::Base::Less;
 use POSIX;
 
-is(run_rockre('a'), '(string "a")');
-is(run_rockre('^^'), '(head)');
-is(run_rockre('$$'), '(tail)');
-is(run_rockre('^^aaa'), '(list (head) (string "aaa"))');
-# ignore space.
-is(run_rockre('^^ aaa'), '(list (head) (string "aaa"))');
+for my $block (blocks) {
+    is(run_rockre($block->input), $block->expected, $block->input);
+}
 
 done_testing;
 
 sub run_rockre {
     my ($re) = @_;
-    my ($out, $exit_code) = run(['./test_rockre', $re], '');
+    my ($out, $exit_code) = run_cmd(['./test_rockre', $re], '');
     POSIX::WIFEXITED($exit_code) or fail("Command is not exited");
     POSIX::WEXITSTATUS($exit_code)==0 or fail("Command does not existed by zero: " . POSIX::WEXITSTATUS($exit_code));
     return $out;
 }
 
-sub run {
+sub run_cmd {
     my ($cmd, $in) = @_;
     $in and die "TBI";
 
@@ -47,3 +44,54 @@ sub run {
         return ($out, $?);
     }
 }
+
+__END__
+
+===
+--- input: a
+--- expected: (string "a")
+
+===
+--- input: ^^
+--- expected: (head)
+
+===
+--- input: $$
+--- expected: (tail)
+
+===
+--- input: ^^
+--- expected: (head)
+
+===
+--- input: ^^aaa
+--- expected: (list (head) (string "aaa"))
+
+=== Ignore space.
+--- input: ^^ aaa
+--- expected: (list (head) (string "aaa"))
+
+===
+--- input: aaa|bbb
+--- expected: (or (string "aaa") (string "bbb"))
+
+===
+--- input: ( aaa | bbb )
+--- expected: (capture (or (string "aaa") (string "bbb")))
+
+===
+--- input: [ aaa | bbb ]
+--- expected: (group (or (string "aaa") (string "bbb")))
+
+===
+--- input: a. 
+--- expected: (list (string "a") (anychar))
+
+===
+--- input: a\.
+--- expected: (string "a.")
+
+===
+--- input: あいう
+--- expected: (string "あいう")
+
