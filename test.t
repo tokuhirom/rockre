@@ -7,6 +7,9 @@ use POSIX;
 is(run_rockre('a'), '(string "a")');
 is(run_rockre('^^'), '(head)');
 is(run_rockre('$$'), '(tail)');
+is(run_rockre('^^aaa'), '(list (head) (string "aaa"))');
+# ignore space.
+is(run_rockre('^^ aaa'), '(list (head) (string "aaa"))');
 
 done_testing;
 

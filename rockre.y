@@ -46,18 +46,18 @@ static inline char rockre_input(char *buf, YY_XTYPE D) {
 
 %}
 
-rockre = a:terms end-of-file { $$ = a; G->data.root=a; }
+rockre = - a:pattern - end-of-file { $$ = a; G->data.root=a; }
 
 end-of-file = !'\0'
 
 pattern =
-    a:terms (
-        '|' b:terms { $$ = NODE(ROCKRE_NODE_OR); }
+    a:terms { $$ = a; } (
+        - '|' - b:terms { $$ = NODE(ROCKRE_NODE_OR); }
     )*
 
 terms =
     a:term { $$ = a; } (
-        b:term {
+        - b:term {
             if (a->type != ROCKRE_NODE_LIST) {
                 a = NODE1(ROCKRE_NODE_LIST, a);
             }
@@ -75,6 +75,8 @@ raw = < [a-zA-Z0-9]+ > { $$ = STRING(ROCKRE_NODE_STRING, yytext, yyleng); }
 head = "^^" { $$ = NODE(ROCKRE_NODE_HEAD); }
 
 tail = "$$" { $$ = NODE(ROCKRE_NODE_TAIL); }
+
+- = ( " " )*
 
 %%
 

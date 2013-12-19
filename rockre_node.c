@@ -17,17 +17,21 @@ rockre_node* rockre_node_new(enum rockre_node_type t) {
 
 rockre_node* rockre_node_new1(enum rockre_node_type t, rockre_node* child1) {
     rockre_node* node = rockre_node_new(t);
-    node->next = child1;
+    node->child = child1;
     return node;
 }
 
 void rockre_node_push_child(rockre_node* a, rockre_node* b)
 {
+  if (a->child) {
     rockre_node* c = a->child;
     while (c->next) {
-        c = c->next;
+      c = c->next;
     }
     c->next = b;
+  } else {
+    a->child = b;
+  }
 }
 
 rockre_node* rockre_node_new_string(enum rockre_node_type t, const char* str, size_t len) {
@@ -42,25 +46,36 @@ rockre_node* rockre_node_new_string(enum rockre_node_type t, const char* str, si
 
 void rockre_node_dump(rockre_node* node, int depth)
 {
-    switch (node->type) {
-    case ROCKRE_NODE_STRING:
-        printf("(string \"%s\")", rockre_string_cstr(node->string));
-        break;
-    case ROCKRE_NODE_TAIL:
-        printf("(tail)");
-        break;
-    case ROCKRE_NODE_HEAD:
-        printf("(head)");
-        break;
-    case ROCKRE_NODE_OR:
-        printf("OR!!");
-        break;
-    case ROCKRE_NODE_LIST:
-        printf("LIST!!");
-        break;
-    default:
-        abort();
+  switch (node->type) {
+  case ROCKRE_NODE_STRING:
+    printf("(string \"%s\")", rockre_string_cstr(node->string));
+    break;
+  case ROCKRE_NODE_TAIL:
+    printf("(tail)");
+    break;
+  case ROCKRE_NODE_HEAD:
+    printf("(head)");
+    break;
+  case ROCKRE_NODE_OR:
+    printf("OR!!");
+    break;
+  case ROCKRE_NODE_LIST:
+    {
+      printf("(list ");
+      rockre_node* n = node->child;
+      while (n) {
+        rockre_node_dump(n, 1);
+        if (n->next) {
+          printf(" ");
+        }
+        n = n->next;
+      }
+      printf(")");
+      break;
     }
+  default:
+    abort();
+  }
 }
 
 
