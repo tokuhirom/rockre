@@ -1,0 +1,4 @@
+-linux
+--line-length160
+--no-tabs
+--indent-level2

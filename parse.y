@@ -63,6 +63,7 @@ pattern =
         - '|' - b:terms {
             if (a->type != ROCKRE_NODE_OR) {
                 a = NODE1(ROCKRE_NODE_OR, a);
+                RESQUE(a);
             }
             PUSH_CHILD(a, b);
         }

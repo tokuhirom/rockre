@@ -2,6 +2,7 @@
 #define ROCKRE_H_
 
 #include <stddef.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,6 +19,17 @@ typedef enum rockre_node_type {
     ROCKRE_NODE_ANYCHAR,
 } rockre_node_type;
 
+typedef enum rockre_op {
+  ROCKRE_OP_STRING,
+  ROCKRE_OP_HEAD,
+  ROCKRE_OP_TAIL,
+  ROCKRE_OP_CAPTURE,
+  ROCKRE_OP_SPLIT,
+  ROCKRE_OP_FINISH,
+  ROCKRE_OP_CHAR,
+} rockre_op;
+
+
 typedef struct rockre_string {
     char* ptr;
     size_t len;
@@ -32,8 +44,27 @@ typedef struct rockre_node {
     struct rockre_node*next;
 } rockre_node;
 
+typedef struct rockre_code {
+  rockre_op opcode;
+  int c;
+  struct rockre_code* x;
+  struct rockre_code* y;
+} rockre_code;
+
+typedef struct rockre_irep {
+    rockre_code** ops;
+    size_t nops;
+} rockre_irep;
+
 /* parser api */
 rockre_node *rockre_parse(const char *str, size_t len);
+
+// Code generator API
+rockre_irep * rockre_codegen(rockre_node* node);
+void rockre_irep_free(rockre_irep* irep);
+
+// VM API
+bool rockre_vm_run(const char *str, size_t len, rockre_irep* irep);
 
 /* node api */
 rockre_node* rockre_node_new(enum rockre_node_type t);
