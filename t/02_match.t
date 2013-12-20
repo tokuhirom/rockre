@@ -55,6 +55,7 @@ __END__
 --- expected: FAIL
 
 ===
+--- SKIP
 --- re:  a | b
 --- str: a
 --- expected: OK

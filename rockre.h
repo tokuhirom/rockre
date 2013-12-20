@@ -35,11 +35,14 @@ namespace RockRE {
     std::vector<Node> children_;
   public:
     Node(const Node &node)
-      : type_(node.type_), string_(node.string_), children_(node.children_) { }
+      : type_(node.type_) {
+      string_ = node.string_;
+      children_ = node.children_;
+    }
     Node()
-      : type_(NODE_UNDEF) { }
+      : type_(NODE_UNDEF), string_("") { }
     Node(NodeType t)
-      : type_(t) { }
+      : type_(t), string_("") { }
     Node(NodeType t, std::string str)
       : type_(t), string_(str) { }
     Node(NodeType t, const char* s, size_t l)
@@ -56,8 +59,14 @@ namespace RockRE {
     NodeType type() const {
       return type_;
     }
-    std::string string() const {
+    void type(NodeType type) {
+      type_ = type;
+    }
+    const std::string string() const {
       return string_;
+    }
+    void string(const std::string &s) {
+      string_ = s;
     }
     const std::vector<Node>& children() const {
       return children_;
@@ -93,7 +102,7 @@ namespace RockRE {
   };
 
   /* parser api */
-  Node parse(const std::string str);
+  bool parse(const std::string str, Node & node, std::string& errstr);
   void codegen(const Node& node, Irep& irep);
 
   const char* op_name(OPType t);

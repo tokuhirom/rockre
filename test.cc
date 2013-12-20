@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <iostream>
 
 using namespace RockRE;
 
@@ -24,7 +25,12 @@ int main(int argc, char** argv)
   }
 
   const char*regexp = argv[n];
-  RockRE::Node node = RockRE::parse(std::string(regexp));
+  Node node;
+  std::string errstr;
+  if (!RockRE::parse(std::string(regexp), node, errstr)) {
+    std::cerr << "Syntax error : " << errstr << std::endl;
+    return EXIT_FAILURE;
+  }
   assert(node.type() != NODE_UNDEF);
   if (run_mode) {
     RockRE::Irep irep;

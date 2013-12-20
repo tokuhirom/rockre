@@ -9,7 +9,7 @@ SET(CMAKE_BUILD_TYPE Debug)
 SET(serial "0.0.1")
 SET(soserial "1")
 
-SET(SRCS parse.y.cc rockre_node.cc rockre_codegen.cc rockre_vm.cc)
+SET(SRCS rockre_node.cc rockre_codegen.cc rockre_vm.cc rockre_parse.cc)
 
 add_library(rockre STATIC ${SRCS})
 
@@ -17,6 +17,4 @@ add_executable(test_rockre rockre test.cc)
 target_link_libraries(test_rockre rockre)
 
 add_custom_target(test DEPENDS test_rockre SOURCES ${SRCS} COMMAND prove -v t/*.t) 
-
-ADD_CUSTOM_COMMAND(SOURCE parse.y PRE_BUILD COMMAND greg ARGS -o parse.y.cc parse.y TARGET parse.y.cc OUTPUTS parse.y.cc)
 
