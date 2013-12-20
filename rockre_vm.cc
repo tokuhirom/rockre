@@ -23,9 +23,9 @@ using namespace RockRE;
  * L3
  */
 
-bool RockRE::match(const std::string str, std::shared_ptr<Irep> irep)
+static bool m(const std::string str, std::shared_ptr<Irep> irep)
 {
-  // programming counter
+  // program counter
   const Code* pc = irep->codes();
 
   // string pointer
@@ -58,5 +58,19 @@ START:
     NEXT;
   case OP_FINISH:
     return true;
+  }
+}
+
+bool RockRE::match(const std::string str, std::shared_ptr<Irep> irep)
+{
+  bool r = m(str, irep);
+  if (r) {
+    return r;
+  } else {
+    if (str.length() > 0) {
+      return RockRE::match(str.substr(1), irep);
+    } else {
+      return false;
+    }
   }
 }

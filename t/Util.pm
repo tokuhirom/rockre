@@ -5,12 +5,13 @@ use utf8;
 use 5.010_001;
 use parent qw(Exporter);
 use POSIX;
+use Test::More;
 
 our @EXPORT = qw(run_rockre run_cmd);
 
 sub run_rockre {
-    my ($re) = @_;
-    my ($out, $exit_code) = run_cmd(['./test_rockre', $re], '');
+    my (@args) = @_;
+    my ($out, $exit_code) = run_cmd(['./test_rockre', @args], '');
     POSIX::WIFEXITED($exit_code) or fail("Command is not exited");
     POSIX::WEXITSTATUS($exit_code)==0 or fail("Command does not existed by zero: " . POSIX::WEXITSTATUS($exit_code));
     return $out;
