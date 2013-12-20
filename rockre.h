@@ -14,6 +14,7 @@ namespace RockRE {
     OP_SPLIT,
     OP_FINISH,
     OP_CHAR,
+    OP_JMP,
   };
 
   enum NodeType {
@@ -68,12 +69,16 @@ namespace RockRE {
     void dump_children(std::string name) const;
   };
 
+  class Code;
+
+  typedef std::vector<Code> Irep;
+
   class Code {
   public:
     OPType op_;
     int c_;
-    int x_;
-    int y_;
+    char a_;
+    char b_;
   public:
     Code(OPType op)
       : op_(op), c_(0) { }
@@ -81,50 +86,20 @@ namespace RockRE {
       : op_(op), c_(c) { }
     OPType op() const { return op_; }
     char c() const { return c_; }
-  };
-
-  class Irep {
-    std::vector<Code> codes_;
-  public:
-    const Code* codes() const {
-      return codes_.data();
-    }
-    void push(OPType op, const char c) {
-      codes_.emplace_back(op, c);
-    }
-    void push(OPType op) {
-      codes_.emplace_back(op);
-    }
+    char a() const { return a_; }
+    char b() const { return b_; }
+    void a(char _) { a_ = _; }
+    void b(char _) { b_ = _; }
   };
 
   /* parser api */
   Node parse(const std::string str);
   void codegen(const Node& node, Irep& irep);
 
+  const char* op_name(OPType t);
+  void dump_irep(const Irep& irep);
+
   bool match(const std::string str, const Irep& irep);
-
-  // Code generator API
-  // rockre_irep * rockre_codegen(rockre_node* node);
-  // void rockre_irep_free(rockre_irep* irep);
-
 };
-
-/*
-typedef struct rockre_code {
-  rockre_op opcode;
-  int c;
-  struct rockre_code* x;
-  struct rockre_code* y;
-} rockre_code;
-
-typedef struct rockre_irep {
-    rockre_code** ops;
-    size_t nops;
-} rockre_irep;
-
-// VM API
-bool rockre_vm_run(const char *str, size_t len, rockre_irep* irep);
-*/
-
 
 #endif // ROCKRE_H_

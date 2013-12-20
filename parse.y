@@ -24,7 +24,7 @@ namespace RockRE {
     std::string src_;
     size_t pos_;
   public:
-    ParserInput(std::string &s) {
+    ParserInput(const std::string &s) {
       src_ = s;
       pos_ = 0;
     }
@@ -113,13 +113,13 @@ esc = "\\"
 
 %%
 
-RockRE::Node RockRE::parse(std::string str)
+RockRE::Node RockRE::parse(const std::string str)
 {
     RockRE::Node root;
     GREG g;
     YY_NAME(init)(&g);
-    std::unique_ptr<RockRE::ParserInput> input(new RockRE::ParserInput(str));
-    g.data.input(input.get());
+    RockRE::ParserInput input(str);
+    g.data.input(&input);
 
     if (!YY_NAME(parse)(&g)) {
         fprintf(stderr, "Syntax error\n");
