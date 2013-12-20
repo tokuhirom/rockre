@@ -10,7 +10,9 @@ aaa|bbb
 
 */
 
-#define YYSTYPE std::shared_ptr<RockRE::Node>
+using namespace RockRE;
+
+#define YYSTYPE RockRE::Node
 #define YY_NAME(n) rockre_parser_##n
 #define YY_XTYPE RockRE::ParserContext
 
@@ -29,16 +31,16 @@ namespace RockRE {
   };
 
   class ParserContext {
-    std::shared_ptr<Node> root_;
+    Node root_;
     ParserInput* input_;
   public:
     void input(ParserInput* input) {
       input_ = input;
     }
-    void root(std::shared_ptr<Node> root) {
+    void root(const Node& root) {
       root_ = root;
     }
-    std::shared_ptr<Node> root() const {
+    Node root() const {
       return root_;
     }
     char yy_input(char* buf) {
@@ -59,7 +61,7 @@ namespace RockRE {
 // TODO: <[abc]>
 // TODO: ( a | b )
 
-#define S std::make_shared<RockRE::Node>
+#define S Node
 
 %}
 
@@ -76,10 +78,10 @@ pattern =
 terms =
     a:term { $$ = a; } (
         - b:term {
-            if (a->type() != RockRE::NODE_LIST) {
+            if (a.type() != RockRE::NODE_LIST) {
                 a = S(RockRE::NODE_LIST, a);
             }
-            a->push_child(b);
+            a.push_child(b);
         }
     )* { $$ = a; }
 
@@ -94,7 +96,7 @@ term =
 raw =
   a:raw_part { $$ = a; } (
     b:raw_part {
-      a = S(RockRE::NODE_STRING, a->string() + b->string());
+      a = S(RockRE::NODE_STRING, a.string() + b.string());
     }
   )* { $$ = a; }
 
@@ -111,9 +113,9 @@ esc = "\\"
 
 %%
 
-std::shared_ptr<RockRE::Node> RockRE::parse(std::string str)
+RockRE::Node RockRE::parse(std::string str)
 {
-    std::shared_ptr<RockRE::Node> root = NULL;
+    RockRE::Node root;
     GREG g;
     YY_NAME(init)(&g);
     std::unique_ptr<RockRE::ParserInput> input(new RockRE::ParserInput(str));

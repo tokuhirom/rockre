@@ -5,6 +5,8 @@
 #include <string.h>
 #include <stdbool.h>
 
+using namespace RockRE;
+
 int main(int argc, char** argv)
 {
   if (argc==1) {
@@ -22,8 +24,8 @@ int main(int argc, char** argv)
   }
 
   const char*regexp = argv[n];
-  std::shared_ptr<RockRE::Node> node = RockRE::parse(std::string(regexp));
-  assert(node);
+  RockRE::Node node = RockRE::parse(std::string(regexp));
+  assert(node.type() != NODE_UNDEF);
   if (run_mode) {
     RockRE::Irep irep;
     RockRE::codegen(node, irep);
@@ -34,7 +36,7 @@ int main(int argc, char** argv)
       printf("FAIL\n");
     }
   } else {
-    node->dump();
+    node.dump();
   }
   return EXIT_SUCCESS;
 }

@@ -1,12 +1,12 @@
 #include "rockre.h"
 #include <iostream>
 
-void RockRE::Node::dump_children(std::string name) const
+void RockRE::Node::dump_children(const std::string name) const
 {
   std::cout << "(" << name << " ";
   size_t i = children_.size();
   for (auto c: children_) {
-    c->dump();
+    c.dump();
     if (i-- != 1) {
       std::cout << " ";
     }
@@ -17,6 +17,9 @@ void RockRE::Node::dump_children(std::string name) const
 void RockRE::Node::dump() const
 {
   switch (type_) {
+  case RockRE::NODE_UNDEF:
+    std::cout << "(undef)";
+    return;
   case RockRE::NODE_STRING:
     std::cout << "(string \"" << string_ << "\")";
     return;

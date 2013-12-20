@@ -3,7 +3,6 @@
 
 #include <stddef.h>
 #include <string>
-#include <memory>
 #include <vector>
 
 namespace RockRE {
@@ -18,6 +17,7 @@ namespace RockRE {
   };
 
   enum NodeType {
+    NODE_UNDEF,
     NODE_LIST = 1,
     NODE_OR,
     NODE_TAIL,
@@ -31,19 +31,23 @@ namespace RockRE {
   class Node {
     enum NodeType type_;
     std::string string_;
-    std::vector<std::shared_ptr<Node>> children_;
+    std::vector<Node> children_;
   public:
+    Node(const Node &node)
+      : type_(node.type_), string_(node.string_), children_(node.children_) { }
+    Node()
+      : type_(NODE_UNDEF) { }
     Node(NodeType t)
       : type_(t) { }
     Node(NodeType t, std::string str)
       : type_(t), string_(str) { }
     Node(NodeType t, const char* s, size_t l)
       : type_(t), string_(s, l) { }
-    Node(NodeType t, std::shared_ptr<Node> child)
+    Node(NodeType t, const Node& child)
       : type_(t) {
           children_.push_back(child);
       }
-    Node(NodeType t, std::shared_ptr<Node> a, std::shared_ptr<Node> b)
+    Node(NodeType t, Node a, Node b)
       : type_(t) {
           children_.push_back(a);
           children_.push_back(b);
@@ -54,10 +58,10 @@ namespace RockRE {
     std::string string() const {
       return string_;
     }
-    const std::vector<std::shared_ptr<Node>>& children() const {
+    const std::vector<Node>& children() const {
       return children_;
     }
-    void push_child(std::shared_ptr<Node> b) {
+    void push_child(Node b) {
       children_.push_back(b);
     }
     void dump() const;
@@ -94,8 +98,8 @@ namespace RockRE {
   };
 
   /* parser api */
-  std::shared_ptr<Node> parse(std::string str);
-  void codegen(const std::shared_ptr<Node> node, Irep& irep);
+  Node parse(const std::string str);
+  void codegen(const Node& node, Irep& irep);
 
   bool match(const std::string str, const Irep& irep);
 
