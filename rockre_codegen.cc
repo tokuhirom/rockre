@@ -1,4 +1,5 @@
 #include "rockre.h"
+#include <stdlib.h>
 
 using namespace RockRE;
 

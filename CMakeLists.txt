@@ -16,7 +16,7 @@ add_library(rockre STATIC ${SRCS})
 add_executable(test_rockre rockre test.cc)
 target_link_libraries(test_rockre rockre)
 
-add_custom_target(test DEPENDS test_rockre SOURCES ${SRCS} COMMAND prove -v *.t) 
+add_custom_target(test DEPENDS test_rockre SOURCES ${SRCS} COMMAND prove -v t/*.t) 
 
 ADD_CUSTOM_COMMAND(SOURCE rockre.y PRE_BUILD COMMAND greg ARGS -o rockre.y.cc rockre.y TARGET rockre.y.cc OUTPUTS rockre.y.cc)
 
