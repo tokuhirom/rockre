@@ -1,2 +1,7 @@
 /test_rockre
 /parse.y.c
+/Makefile
+/CMakeCache.txt
+/CMakeFiles/
+/cmake_install.cmake
+/librockre.a
