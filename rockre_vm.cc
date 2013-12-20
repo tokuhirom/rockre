@@ -9,7 +9,17 @@
 #define JMP goto START
 
 // We should care the next branch
-#define FAIL return false
+#define FAIL \
+  do { \
+    if (threads.size() == 0) { \
+      return false; \
+    } else { \
+      sp = threads.back().sp; \
+      pc = threads.back().pc; \
+      threads.pop_back(); \
+      JMP; \
+    } \
+  } while(0)
 
 using namespace RockRE;
 
@@ -25,14 +35,12 @@ using namespace RockRE;
  * L3
  */
 
-class Thread {
-  size_t pc_;
-  size_t sp_;
-
-public:
-  Thread(size_t a, size_t b) {
-    pc_ = a;
-    sp_ = b;
+struct Thread {
+  size_t pc;
+  size_t sp;
+  Thread(size_t s, size_t p) {
+    pc = p;
+    sp = s;
   }
 };
 
@@ -45,6 +53,7 @@ static bool m(const std::string str, const Irep &irep, bool is_head, size_t pc)
 
   // todo: direct threaded code
 START:
+  // printf("trace pc:%zu, sp:%zu\n", pc, sp);
   switch (irep[pc].op()) {
   case OP_CHAR:
     if (str[sp] == irep[pc].c()) {

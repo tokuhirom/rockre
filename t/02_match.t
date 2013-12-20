@@ -55,7 +55,26 @@ __END__
 --- expected: FAIL
 
 ===
---- SKIP
 --- re:  a | b
 --- str: a
+--- expected: OK
+
+===
+--- re:  a | b
+--- str: b
+--- expected: OK
+
+===
+--- re:  ^^ a | b
+--- str: oa
+--- expected: FAIL
+
+===
+--- re:  ^^ a | b
+--- str: ao
+--- expected: OK
+
+===
+--- re:  ^^ a | b
+--- str: ob
 --- expected: OK

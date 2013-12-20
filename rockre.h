@@ -86,8 +86,8 @@ namespace RockRE {
   public:
     OPType op_;
     int c_;
-    char a_;
-    char b_;
+    uint8_t a_;
+    uint8_t b_;
   public:
     Code(OPType op)
       : op_(op), c_(0) { }
@@ -95,10 +95,10 @@ namespace RockRE {
       : op_(op), c_(c) { }
     OPType op() const { return op_; }
     char c() const { return c_; }
-    char a() const { return a_; }
-    char b() const { return b_; }
-    void a(char _) { a_ = _; }
-    void b(char _) { b_ = _; }
+    uint8_t a() const { return a_; }
+    uint8_t b() const { return b_; }
+    void a(uint8_t _) { a_ = _; }
+    void b(uint8_t _) { b_ = _; }
   };
 
   /* parser api */

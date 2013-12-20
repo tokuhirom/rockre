@@ -15,11 +15,15 @@ int main(int argc, char** argv)
   }
 
   bool run_mode = false;
+  bool dump_irep_mode = false;
 
   int n = 1;
-  if (argv[n][0] == '-') {
+  while (argv[n][0] == '-') {
     if (argv[n][1] == 'r') {
       run_mode = true;
+      n++;
+    } else if (argv[n][1] == 'd') {
+      dump_irep_mode = true;
       n++;
     }
   }
@@ -35,6 +39,9 @@ int main(int argc, char** argv)
   if (run_mode) {
     RockRE::Irep irep;
     RockRE::codegen(node, irep);
+    if (dump_irep_mode) {
+      dump_irep(irep);
+    }
     bool ret = RockRE::match(std::string(argv[n+1]), irep);
     if (ret) {
       printf("OK\n");
