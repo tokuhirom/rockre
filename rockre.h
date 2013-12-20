@@ -2,48 +2,111 @@
 #define ROCKRE_H_
 
 #include <stddef.h>
-#include <stdbool.h>
+#include <string>
+#include <memory>
+#include <vector>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace RockRE {
 
-typedef enum rockre_node_type {
-    ROCKRE_NODE_LIST = 1,
-    ROCKRE_NODE_OR,
-    ROCKRE_NODE_TAIL,
-    ROCKRE_NODE_HEAD,
-    ROCKRE_NODE_STRING,
-    ROCKRE_NODE_CAPTURE,
-    ROCKRE_NODE_GROUP,
-    ROCKRE_NODE_ANYCHAR,
-} rockre_node_type;
+  enum OPType {
+    OP_HEAD,
+    OP_TAIL,
+    OP_CAPTURE,
+    OP_SPLIT,
+    OP_FINISH,
+    OP_CHAR,
+  };
 
-typedef enum rockre_op {
-  ROCKRE_OP_STRING,
-  ROCKRE_OP_HEAD,
-  ROCKRE_OP_TAIL,
-  ROCKRE_OP_CAPTURE,
-  ROCKRE_OP_SPLIT,
-  ROCKRE_OP_FINISH,
-  ROCKRE_OP_CHAR,
-} rockre_op;
+  enum NodeType {
+    NODE_LIST = 1,
+    NODE_OR,
+    NODE_TAIL,
+    NODE_HEAD,
+    NODE_STRING,
+    NODE_CAPTURE,
+    NODE_GROUP,
+    NODE_ANYCHAR,
+  };
 
+  class Node {
+    enum NodeType type_;
+    std::string string_;
+    std::shared_ptr<Node> child_;
+    std::shared_ptr<Node> next_;
+  public:
+    Node(NodeType t)
+      : type_(t) { }
+    Node(NodeType t, std::string str)
+      : type_(t), string_(str) { }
+    Node(NodeType t, const char* s, size_t l)
+      : type_(t), string_(s, l) { }
+    Node(NodeType t, Node* child)
+      : type_(t), child_(child) { }
+    Node(NodeType t, std::shared_ptr<Node> child)
+      : type_(t), child_(child) { }
+    NodeType type() const {
+      return type_;
+    }
+    std::string string() const {
+      return string_;
+    }
+    void push_child(std::shared_ptr<Node> b) {
+      if (child_) {
+        std::shared_ptr<Node> c = child_;
+        while (c->next_) {
+          c = c->next_;
+        }
+        c->next_ = b;
+      } else {
+        child_ = b;
+      }
+    }
+    void dump() const;
+    void dump_children(std::string name) const;
+  };
 
-typedef struct rockre_string {
-    char* ptr;
-    size_t len;
-} rockre_string;
+  class Code {
+  public:
+    OPType op_;
+    char c_;
+    std::shared_ptr<Code> x_;
+    std::shared_ptr<Code> y_;
+  public:
+    Code(OPType op)
+      : op_(op), c_(0) { }
+    Code(OPType op, const char c)
+      : op_(op), c_(c) { }
+    OPType op() const { return op_; }
+    char c() const { return c_; }
+  };
 
-typedef struct rockre_node {
-    enum rockre_node_type type;
-    union {
-        rockre_string* string;
-        struct rockre_node* child;
-    };
-    struct rockre_node*next;
-} rockre_node;
+  class Irep {
+    std::vector<Code> codes_;
+  public:
+    const Code* codes() const {
+      return codes_.data();
+    }
+    void push(OPType op, const char c) {
+      codes_.emplace_back(op, c);
+    }
+    void push(OPType op) {
+      codes_.emplace_back(op);
+    }
+  };
 
+  /* parser api */
+  std::shared_ptr<Node> parse(std::string str);
+  std::shared_ptr<Irep> codegen(const std::shared_ptr<Node> node);
+
+  bool match(const std::string str, std::shared_ptr<Irep> irep);
+
+  // Code generator API
+  // rockre_irep * rockre_codegen(rockre_node* node);
+  // void rockre_irep_free(rockre_irep* irep);
+
+};
+
+/*
 typedef struct rockre_code {
   rockre_op opcode;
   int c;
@@ -56,35 +119,9 @@ typedef struct rockre_irep {
     size_t nops;
 } rockre_irep;
 
-/* parser api */
-rockre_node *rockre_parse(const char *str, size_t len);
-
-// Code generator API
-rockre_irep * rockre_codegen(rockre_node* node);
-void rockre_irep_free(rockre_irep* irep);
-
 // VM API
 bool rockre_vm_run(const char *str, size_t len, rockre_irep* irep);
+*/
 
-/* node api */
-rockre_node* rockre_node_new(enum rockre_node_type t);
-rockre_node* rockre_node_new1(enum rockre_node_type t, rockre_node* child1);
-void rockre_node_push_child(rockre_node* a, rockre_node* b);
-rockre_node* rockre_node_new_string(enum rockre_node_type t, const char* str, size_t len);
-void rockre_node_dump(rockre_node* node, int depth);
-rockre_node* rockre_node_string_plus(rockre_node* node1, rockre_node* node2);
-void rockre_node_free(rockre_node* node);
-
-/**
- * String functions.
- */
-const char *rockre_string_cstr(rockre_string* str);
-rockre_string* rockre_string_new(const char* ptr, size_t len);
-rockre_string* rockre_string_plus(rockre_string* str, rockre_string* str2);
-void rockre_string_free(rockre_string* str);
-
-#ifdef __cplusplus
-};
-#endif
 
 #endif // ROCKRE_H_

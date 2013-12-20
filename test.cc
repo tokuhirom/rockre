@@ -22,19 +22,18 @@ int main(int argc, char** argv)
   }
 
   const char*regexp = argv[n];
-  rockre_node* node = rockre_parse(regexp, strlen(regexp));
+  std::shared_ptr<RockRE::Node> node = RockRE::parse(std::string(regexp));
   assert(node);
   if (run_mode) {
-    rockre_irep* irep = rockre_codegen(node);
-    bool ret = rockre_vm_run(argv[n+1], strlen(argv[n+1]), irep);
-    rockre_irep_free(irep);
+    std::shared_ptr<RockRE::Irep> irep = RockRE::codegen(node);
+    bool ret = RockRE::match(std::string(argv[n+1]), irep);
     if (ret) {
       printf("OK\n");
     } else {
       printf("FAIL\n");
     }
   } else {
-    rockre_node_dump(node, 0);
+    node->dump();
   }
   return EXIT_SUCCESS;
 }

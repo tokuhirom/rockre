@@ -9,6 +9,8 @@
 // We should care the next branch
 #define FAIL return false
 
+using namespace RockRE;
+
 /**
  * compile a|b:
  *
@@ -21,41 +23,40 @@
  * L3
  */
 
-bool rockre_vm_run(const char *str, size_t len, rockre_irep* irep)
+bool RockRE::match(const std::string str, std::shared_ptr<Irep> irep)
 {
   // programming counter
-  rockre_code* pc = irep->ops;
+  const Code* pc = irep->codes();
 
   // string pointer
-  const char *sp = str;
+  size_t sp = 0;
 
 START:
-  switch (pc->opcode) {
-  case ROCKRE_OP_CHAR:
-    if (*sp == pc->c) {
+  switch (pc->op()) {
+  case OP_CHAR:
+    if (str[sp] == pc->c()) {
       sp++;
+    } else {
+      return false;
     }
     NEXT;
-  case ROCKRE_OP_STRING:
-    abort();
-    NEXT;
-  case ROCKRE_OP_HEAD:
+  case OP_HEAD:
     // ^^
-    if (sp != str) {
+    if (sp != 0) {
       FAIL;
     }
     NEXT;
-  case ROCKRE_OP_TAIL:
-    if (sp != str+len) {
+  case OP_TAIL:
+    if (sp != str.length()) {
       FAIL;
     }
     NEXT;
-  case ROCKRE_OP_CAPTURE:
+  case OP_CAPTURE:
     abort();
-  case ROCKRE_OP_SPLIT:
+  case OP_SPLIT:
     abort();
     NEXT;
-  case ROCKRE_OP_FINISH:
+  case OP_FINISH:
     return true;
   }
 }
