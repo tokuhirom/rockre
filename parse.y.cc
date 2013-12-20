@@ -515,46 +515,18 @@ YY_ACTION(void) yy_1_terms(GREG *G, char *yytext, int yyleng, yythunk *thunk, YY
 #undef b
 #undef a
 }
-YY_ACTION(void) yy_3_pattern(GREG *G, char *yytext, int yyleng, yythunk *thunk, YY_XTYPE YY_XVAR)
-{
-#define b G->val[-1]
-#define a G->val[-2]
-  yyprintf((stderr, "do yy_3_pattern"));
-  yyprintfvTcontext(yytext);
-  yyprintf((stderr, "\n  {yy = a; }\n"));
-  yy = a; ;
-#undef b
-#undef a
-}
-YY_ACTION(void) yy_2_pattern(GREG *G, char *yytext, int yyleng, yythunk *thunk, YY_XTYPE YY_XVAR)
-{
-#define b G->val[-1]
-#define a G->val[-2]
-  yyprintf((stderr, "do yy_2_pattern"));
-  yyprintfvTcontext(yytext);
-  yyprintf((stderr, "\n  {\n\
-            if (a->type() != RockRE::NODE_OR) {\n\
-                a = S(RockRE::NODE_OR, a);\n\
-            }\n\
-            a->push_child(b);\n\
-        }\n"));
-  
-            if (a->type() != RockRE::NODE_OR) {
-                a = S(RockRE::NODE_OR, a);
-            }
-            a->push_child(b);
-        ;
-#undef b
-#undef a
-}
 YY_ACTION(void) yy_1_pattern(GREG *G, char *yytext, int yyleng, yythunk *thunk, YY_XTYPE YY_XVAR)
 {
 #define b G->val[-1]
 #define a G->val[-2]
   yyprintf((stderr, "do yy_1_pattern"));
   yyprintfvTcontext(yytext);
-  yyprintf((stderr, "\n  {yy = a; }\n"));
-  yy = a; ;
+  yyprintf((stderr, "\n  {\n\
+      yy = S(RockRE::NODE_OR, a, b);\n\
+    }\n"));
+  
+      yy = S(RockRE::NODE_OR, a, b);
+    ;
 #undef b
 #undef a
 }
@@ -755,21 +727,20 @@ YY_RULE(int) yy_end_of_file(GREG *G)
 YY_RULE(int) yy_pattern(GREG *G)
 {  int yypos0= G->pos, yythunkpos0= G->thunkpos;  yyDo(G, yyPush, 2, 0, "yyPush");
   yyprintfv((stderr, "%s\n", "pattern"));
-  if (!yy_terms(G))  goto l25;
-  yyDo(G, yySet, -2, 0, "yySet");
-  yyDo(G, yy_1_pattern, G->begin, G->end, "yy_1_pattern");
 
-  l26:;	
-  {  int yypos27= G->pos, yythunkpos27= G->thunkpos;  if (!yy__(G))  goto l27;
+  {  int yypos26= G->pos, yythunkpos26= G->thunkpos;  if (!yy_terms(G))  goto l27;
+  yyDo(G, yySet, -2, 0, "yySet");
+  if (!yy__(G))  goto l27;
   if (!yymatchChar(G, '|')) goto l27;
   if (!yy__(G))  goto l27;
-  if (!yy_terms(G))  goto l27;
+  if (!yy_pattern(G))  goto l27;
   yyDo(G, yySet, -1, 0, "yySet");
-  yyDo(G, yy_2_pattern, G->begin, G->end, "yy_2_pattern");
+  yyDo(G, yy_1_pattern, G->begin, G->end, "yy_1_pattern");
   goto l26;
-  l27:;	  G->pos= yypos27; G->thunkpos= yythunkpos27;
-  }  yyDo(G, yy_3_pattern, G->begin, G->end, "yy_3_pattern");
-  yyprintf((stderr, "  ok   pattern"));
+  l27:;	  G->pos= yypos26; G->thunkpos= yythunkpos26;  if (!yy_terms(G))  goto l25;
+
+  }
+  l26:;	  yyprintf((stderr, "  ok   pattern"));
   yyprintfGcontext;
   yyprintf((stderr, "\n"));
   yyDo(G, yyPop, 2, 0, "yyPop");

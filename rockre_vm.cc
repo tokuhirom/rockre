@@ -23,7 +23,7 @@ using namespace RockRE;
  * L3
  */
 
-static bool m(const std::string str, std::shared_ptr<Irep> irep)
+static bool m(const std::string str, std::shared_ptr<Irep> irep, bool is_head)
 {
   // program counter
   const Code* pc = irep->codes();
@@ -37,12 +37,12 @@ START:
     if (str[sp] == pc->c()) {
       sp++;
     } else {
-      return false;
+      FAIL;
     }
     NEXT;
   case OP_HEAD:
     // ^^
-    if (sp != 0) {
+    if (sp != 0 || !is_head) {
       FAIL;
     }
     NEXT;
@@ -63,14 +63,13 @@ START:
 
 bool RockRE::match(const std::string str, std::shared_ptr<Irep> irep)
 {
-  bool r = m(str, irep);
-  if (r) {
-    return r;
-  } else {
-    if (str.length() > 0) {
-      return RockRE::match(str.substr(1), irep);
-    } else {
-      return false;
+  int i = 0;
+  while (i < str.length()) {
+    bool r = m(str.substr(i), irep, i==0);
+    if (r) {
+      return true;
     }
+    ++i;
   }
+  return false;
 }

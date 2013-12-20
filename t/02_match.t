@@ -34,3 +34,27 @@ __END__
 --- str: b
 --- expected: FAIL
 
+===
+--- re:  ^^ a
+--- str: a
+--- expected: OK
+
+===
+--- re:  ^^ a
+--- str: ba
+--- expected: FAIL
+
+===
+--- re:  a $$
+--- str: ba
+--- expected: OK
+
+===
+--- re:  a $$
+--- str: bao
+--- expected: FAIL
+
+===
+--- re:  a | b
+--- str: a
+--- expected: OK

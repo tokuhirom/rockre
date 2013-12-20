@@ -41,6 +41,10 @@ __END__
 --- expected: (or (string "aaa") (string "bbb"))
 
 ===
+--- input: a|b|c
+--- expected: (or (string "a") (or (string "b") (string "c")))
+
+===
 --- input: ( aaa | bbb )
 --- expected: (capture (or (string "aaa") (string "bbb")))
 

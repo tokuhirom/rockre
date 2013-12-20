@@ -4,13 +4,12 @@
 void RockRE::Node::dump_children(std::string name) const
 {
   std::cout << "(" << name << " ";
-  std::shared_ptr<RockRE::Node> n = child_;
-  while (n) {
-    n->dump();
-    if (n->next_) {
+  size_t i = children_.size();
+  for (auto c: children_) {
+    c->dump();
+    if (i-- != 1) {
       std::cout << " ";
     }
-    n = n->next_;
   }
   std::cout << ")";
 }

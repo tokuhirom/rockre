@@ -31,8 +31,7 @@ namespace RockRE {
   class Node {
     enum NodeType type_;
     std::string string_;
-    std::shared_ptr<Node> child_;
-    std::shared_ptr<Node> next_;
+    std::vector<std::shared_ptr<Node>> children_;
   public:
     Node(NodeType t)
       : type_(t) { }
@@ -40,26 +39,26 @@ namespace RockRE {
       : type_(t), string_(str) { }
     Node(NodeType t, const char* s, size_t l)
       : type_(t), string_(s, l) { }
-    Node(NodeType t, Node* child)
-      : type_(t), child_(child) { }
     Node(NodeType t, std::shared_ptr<Node> child)
-      : type_(t), child_(child) { }
+      : type_(t) {
+          children_.push_back(child);
+      }
+    Node(NodeType t, std::shared_ptr<Node> a, std::shared_ptr<Node> b)
+      : type_(t) {
+          children_.push_back(a);
+          children_.push_back(b);
+      }
     NodeType type() const {
       return type_;
     }
     std::string string() const {
       return string_;
     }
+    const std::vector<std::shared_ptr<Node>>& children() const {
+      return children_;
+    }
     void push_child(std::shared_ptr<Node> b) {
-      if (child_) {
-        std::shared_ptr<Node> c = child_;
-        while (c->next_) {
-          c = c->next_;
-        }
-        c->next_ = b;
-      } else {
-        child_ = b;
-      }
+      children_.push_back(b);
     }
     void dump() const;
     void dump_children(std::string name) const;
@@ -68,9 +67,9 @@ namespace RockRE {
   class Code {
   public:
     OPType op_;
-    char c_;
-    std::shared_ptr<Code> x_;
-    std::shared_ptr<Code> y_;
+    int c_;
+    int x_;
+    int y_;
   public:
     Code(OPType op)
       : op_(op), c_(0) { }

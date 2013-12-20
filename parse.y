@@ -68,14 +68,10 @@ rockre = - a:pattern - end-of-file { $$ = a; G->data.root(a); }
 end-of-file = !'\0'
 
 pattern =
-    a:terms { $$ = a; } (
-        - '|' - b:terms {
-            if (a->type() != RockRE::NODE_OR) {
-                a = S(RockRE::NODE_OR, a);
-            }
-            a->push_child(b);
-        }
-    )* { $$ = a; }
+    a:terms - '|' - b:pattern {
+      $$ = S(RockRE::NODE_OR, a, b);
+    }
+    | terms
 
 terms =
     a:term { $$ = a; } (

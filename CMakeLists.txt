@@ -18,5 +18,5 @@ target_link_libraries(test_rockre rockre)
 
 add_custom_target(test DEPENDS test_rockre SOURCES ${SRCS} COMMAND prove -v t/*.t) 
 
-ADD_CUSTOM_COMMAND(SOURCE rockre.y PRE_BUILD COMMAND greg ARGS -o rockre.y.cc rockre.y TARGET rockre.y.cc OUTPUTS rockre.y.cc)
+ADD_CUSTOM_COMMAND(SOURCE parse.y PRE_BUILD COMMAND greg ARGS -o parse.y.cc parse.y TARGET parse.y.cc OUTPUTS parse.y.cc)
 
