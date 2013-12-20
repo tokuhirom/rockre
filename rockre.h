@@ -15,6 +15,7 @@ namespace RockRE {
     OP_FINISH,
     OP_CHAR,
     OP_JMP,
+    OP_ANYCHAR,
   };
 
   enum NodeType {

@@ -58,10 +58,16 @@ START:
   case OP_CHAR:
     if (str[sp] == irep[pc].c()) {
       sp++;
+      NEXT;
     } else {
       FAIL;
     }
-    NEXT;
+  case OP_ANYCHAR:
+    if (str.length() > sp) {
+      NEXT;
+    } else {
+      FAIL;
+    }
   case OP_HEAD:
     // ^^
     if (sp != 0 || !is_head) {

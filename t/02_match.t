@@ -78,3 +78,39 @@ __END__
 --- re:  ^^ a | b
 --- str: ob
 --- expected: OK
+
+===
+--- re:  a[b|c]
+--- str: ab
+--- expected: OK
+
+===
+--- re:  a[b|c]
+--- str: ac
+--- expected: OK
+
+===
+--- re:  a[b|c]
+--- str: a
+--- expected: FAIL
+
+===
+--- re:  a[b|c]
+--- str: aa
+--- expected: FAIL
+
+===
+--- re:  a.
+--- str: aa
+--- expected: OK
+
+===
+--- re:  a.
+--- str: aa
+--- expected: OK
+
+===
+--- re:  a.
+--- str: a
+--- expected: FAIL
+

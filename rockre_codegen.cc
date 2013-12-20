@@ -22,6 +22,8 @@ const char* RockRE::op_name(OPType t)
     return "CHAR";
   case OP_JMP:
     return "JMP";
+  case OP_ANYCHAR:
+    return "ANYCHAR";
   }
 }
 
@@ -57,6 +59,7 @@ static void gen(Irep& irep, const Node& node)
       }
       return;
     }
+  case NODE_GROUP:
   case NODE_LIST:
     {
       for (auto child: node.children()) {
@@ -102,6 +105,9 @@ static void gen(Irep& irep, const Node& node)
 
       return;
     }
+  case NODE_ANYCHAR:
+    irep.emplace_back(OP_ANYCHAR);
+    return;
   case NODE_HEAD:
     irep.emplace_back(OP_HEAD);
     return;
