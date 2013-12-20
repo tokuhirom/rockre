@@ -114,3 +114,8 @@ __END__
 --- str: a
 --- expected: FAIL
 
+===
+--- re:  a.c
+--- str: abc
+--- expected: OK
+

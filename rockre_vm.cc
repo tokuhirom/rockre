@@ -64,6 +64,7 @@ START:
     }
   case OP_ANYCHAR:
     if (str.length() > sp) {
+      sp++;
       NEXT;
     } else {
       FAIL;
