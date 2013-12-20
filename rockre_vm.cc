@@ -35,13 +35,16 @@ using namespace RockRE;
  * L3
  */
 
-struct Thread {
-  size_t pc;
-  size_t sp;
-  Thread(size_t s, size_t p) {
-    pc = p;
-    sp = s;
-  }
+
+namespace RockRE {
+  struct Thread {
+    size_t pc;
+    size_t sp;
+    Thread(size_t s, size_t p) {
+      pc = p;
+      sp = s;
+    }
+  };
 };
 
 static bool m(const std::string str, const Irep &irep, bool is_head, size_t pc)
@@ -91,6 +94,10 @@ START:
     JMP;
   case OP_FINISH:
     return true;
+  case OP_SAVE:
+    NEXT;
+  case OP_MATCH:
+    NEXT;
   }
 }
 
