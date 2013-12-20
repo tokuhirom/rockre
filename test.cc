@@ -25,7 +25,8 @@ int main(int argc, char** argv)
   std::shared_ptr<RockRE::Node> node = RockRE::parse(std::string(regexp));
   assert(node);
   if (run_mode) {
-    std::shared_ptr<RockRE::Irep> irep = RockRE::codegen(node);
+    RockRE::Irep irep;
+    RockRE::codegen(node, irep);
     bool ret = RockRE::match(std::string(argv[n+1]), irep);
     if (ret) {
       printf("OK\n");

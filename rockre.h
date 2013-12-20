@@ -95,9 +95,9 @@ namespace RockRE {
 
   /* parser api */
   std::shared_ptr<Node> parse(std::string str);
-  std::shared_ptr<Irep> codegen(const std::shared_ptr<Node> node);
+  void codegen(const std::shared_ptr<Node> node, Irep& irep);
 
-  bool match(const std::string str, std::shared_ptr<Irep> irep);
+  bool match(const std::string str, const Irep& irep);
 
   // Code generator API
   // rockre_irep * rockre_codegen(rockre_node* node);

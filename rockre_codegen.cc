@@ -3,13 +3,13 @@
 
 using namespace RockRE;
 
-static void gen(std::shared_ptr<RockRE::Irep> irep, std::shared_ptr<Node> node)
+static void gen(Irep& irep, std::shared_ptr<Node> node)
 {
   switch (node->type()) {
   case NODE_STRING:
     {
       for (const char& c: node->string()) {
-        irep->push(OP_CHAR, c);
+        irep.push(OP_CHAR, c);
       }
       return;
     }
@@ -40,10 +40,10 @@ static void gen(std::shared_ptr<RockRE::Irep> irep, std::shared_ptr<Node> node)
         abort();
     }
   case NODE_HEAD:
-    irep->push(OP_HEAD);
+    irep.push(OP_HEAD);
     return;
   case NODE_TAIL:
-    irep->push(OP_TAIL);
+    irep.push(OP_TAIL);
     return;
 default:
     abort();
@@ -51,11 +51,9 @@ default:
   abort();
 }
 
-std::shared_ptr<Irep> RockRE::codegen(const std::shared_ptr<RockRE::Node> node)
+void RockRE::codegen(const std::shared_ptr<RockRE::Node> node, RockRE::Irep& irep)
 {
-  std::shared_ptr<RockRE::Irep> irep(new RockRE::Irep);
   gen(irep, node);
-  irep->push(OP_FINISH);
-  return irep;
+  irep.push(OP_FINISH);
 }
 

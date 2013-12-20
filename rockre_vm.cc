@@ -23,10 +23,10 @@ using namespace RockRE;
  * L3
  */
 
-static bool m(const std::string str, std::shared_ptr<Irep> irep, bool is_head)
+static bool m(const std::string str, const Irep &irep, bool is_head)
 {
   // program counter
-  const Code* pc = irep->codes();
+  const Code* pc = irep.codes();
 
   // string pointer
   size_t sp = 0;
@@ -61,7 +61,7 @@ START:
   }
 }
 
-bool RockRE::match(const std::string str, std::shared_ptr<Irep> irep)
+bool RockRE::match(const std::string str, const Irep& irep)
 {
   int i = 0;
   while (i < str.length()) {
