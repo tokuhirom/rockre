@@ -20,6 +20,9 @@ void RockRE::Node::dump() const
   case NODE_UNDEF:
     std::cout << "(undef)";
     return;
+  case NODE_QUOTE:
+    std::cout << "(quote \"" << string_ << "\")";
+    return;
   case NODE_STRING:
     std::cout << "(string \"" << string_ << "\")";
     return;

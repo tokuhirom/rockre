@@ -65,6 +65,7 @@ namespace RockRE {
     void gen(Irep& irep, const Node& node)
     {
       switch (node.type()) {
+      case NODE_QUOTE:
       case NODE_STRING:
         {
           for (const char& c: node.string()) {

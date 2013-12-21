@@ -35,6 +35,7 @@ namespace RockRE {
     NODE_ANYCHAR,
     NODE_LINETAIL,
     NODE_LINEHEAD,
+    NODE_QUOTE,
   };
 
   class Node {

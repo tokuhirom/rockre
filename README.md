@@ -9,6 +9,8 @@ Perl6 compatible regular expresssion engine in C++
     .     anychar
     (a)   capture
     [a|b] grouping
+    ^     string head
+    $     string tail
 
 ## Unsupported (yet) syntax
 
@@ -20,6 +22,8 @@ Perl6 compatible regular expresssion engine in C++
     ??
     'quoted'
     .**2
+    ^^        line head
+    $$        line tail
 
 ## See also
 

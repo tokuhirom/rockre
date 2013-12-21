@@ -1,4 +1,5 @@
 #include "rockre.h"
+#include <assert.h>
 
 #define TEST(test,node) \
   if (test(node)) { \
@@ -132,12 +133,13 @@ namespace RockRE {
       TEST(parse_linetail, node);
       TEST(parse_head,     node);
       TEST(parse_tail,     node);
+      TEST(parse_quote,    node);
       STATUS;
-      TEST(parse_raw,      node);
       STATUS;
       TEST(parse_capture,  node);
       TEST(parse_group,    node);
       TEST(parse_anychar,  node);
+      TEST(parse_raw,      node);
       return false;
     }
 
@@ -179,6 +181,59 @@ namespace RockRE {
     bool parse_capture(Node& node) {
       STATUS;
       return parse_paren(node, '(', ')', NODE_CAPTURE);
+    }
+
+    bool parse_quote_body(Node& node, char close_char) {
+      STATUS;
+      std::string buf;
+      while (src_.length() != sp_) {
+        char ch = src_[sp_];
+        if (ch == close_char) {
+          node = Node(NODE_QUOTE, buf);
+          return true;
+        } else if (ch == '\\') {
+          sp_++;
+          if (rest() == 0) {
+            goto FAIL;
+          }
+
+          switch (src_[sp_]) {
+          case 't':
+            buf += '\t';
+            sp_++;
+            break;
+          case 'n':
+            buf += '\n';
+            sp_++;
+            break;
+          default:
+            buf += src_[sp_];
+            sp_++;
+            break;
+          }
+        } else {
+          buf += ch;
+          sp_++;
+        }
+      }
+      FAIL:
+      errstr_ = "Unexpected end-of-string in quoted string";
+      return false;
+    }
+
+    // quote = ' quoted '
+    // quote = " quoted "
+    bool parse_quote(Node& node) {
+      STATUS;
+      if (EXPECT(1, "\"")) {
+        sp_++;
+        return parse_quote_body(node, '\"');
+      } else if (EXPECT(1, "'")) {
+        sp_++;
+        return parse_quote_body(node, '\'');
+      } else {
+        return false;
+      }
     }
 
     // ( \t | \. | [^.|)([]?.]_ )
@@ -291,8 +346,13 @@ namespace RockRE {
       }
     }
 
+    size_t rest() {
+      return src_.length() - sp_;
+    }
+
     bool EXPECT(size_t n, const std::string s) {
-      if ((long)src_.length() - (long)sp_ > 0 && src_.length() - sp_ >= n) {
+      assert((long)src_.length() - (long)sp_ >= 0);
+      if (src_.length() - sp_ >= n) {
 #ifdef VM_DEBUG
         printf("[EXPECT] sp:%zu %s\n", sp_, s.c_str());
 #endif
