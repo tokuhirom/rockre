@@ -72,3 +72,6 @@ __END__
 --- input: あいう
 --- expected: (string "あいう")
 
+===
+--- input: "あいう"
+--- expected: (quote "あいう")
