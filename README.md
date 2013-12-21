@@ -19,6 +19,7 @@ Perl6 compatible regular expresssion engine in C++
     +?
     ??
     'quoted'
+    .**2
 
 ## See also
 

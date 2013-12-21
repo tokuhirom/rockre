@@ -93,6 +93,10 @@ START:
         FAIL;
       }
     }
+  case OP_LINEHEAD:
+    abort();
+  case OP_LINETAIL:
+    abort();
   case OP_HEAD:
     // ^^
     if (sp != 0 || !is_head) {
@@ -127,7 +131,7 @@ START:
 
 bool RockRE::partial_match(const std::string str, const Irep& irep, std::map<int,std::string> &captured)
 {
-  int i = 0;
+  size_t i = 0;
   while (i < str.length()) {
     bool r = m(str.substr(i), irep, i==0, captured);
     if (r) {

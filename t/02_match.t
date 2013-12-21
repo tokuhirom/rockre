@@ -35,22 +35,22 @@ __END__
 --- expected: FAIL
 
 ===
---- re:  ^^ a
+--- re:  ^ a
 --- str: a
 --- expected: OK
 
 ===
---- re:  ^^ a
+--- re:  ^ a
 --- str: ba
 --- expected: FAIL
 
 ===
---- re:  a $$
+--- re:  a $
 --- str: ba
 --- expected: OK
 
 ===
---- re:  a $$
+--- re:  a $
 --- str: bao
 --- expected: FAIL
 
@@ -65,17 +65,17 @@ __END__
 --- expected: OK
 
 ===
---- re:  ^^ a | b
+--- re:  ^ a | b
 --- str: oa
 --- expected: FAIL
 
 ===
---- re:  ^^ a | b
+--- re:  ^ a | b
 --- str: ao
 --- expected: OK
 
 ===
---- re:  ^^ a | b
+--- re:  ^ a | b
 --- str: ob
 --- expected: OK
 

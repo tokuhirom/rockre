@@ -19,6 +19,8 @@ namespace RockRE {
     OP_ANYCHAR,
     OP_SAVE,
     OP_MATCH,
+    OP_LINEHEAD,
+    OP_LINETAIL,
   };
 
   enum NodeType {
@@ -31,6 +33,8 @@ namespace RockRE {
     NODE_CAPTURE,
     NODE_GROUP,
     NODE_ANYCHAR,
+    NODE_LINETAIL,
+    NODE_LINEHEAD,
   };
 
   class Node {

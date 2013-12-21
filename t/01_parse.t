@@ -18,23 +18,27 @@ __END__
 
 ===
 --- input: ^^
---- expected: (head)
+--- expected: (linehead)
 
 ===
 --- input: $$
---- expected: (tail)
+--- expected: (linetail)
 
 ===
---- input: ^^
+--- input: ^
 --- expected: (head)
 
 ===
+--- input: $
+--- expected: (tail)
+
+===
 --- input: ^^aaa
---- expected: (list (head) (string "aaa"))
+--- expected: (list (linehead) (string "aaa"))
 
 === Ignore space.
 --- input: ^^ aaa
---- expected: (list (head) (string "aaa"))
+--- expected: (list (linehead) (string "aaa"))
 
 ===
 --- input: aaa|bbb

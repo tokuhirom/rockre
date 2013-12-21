@@ -56,6 +56,7 @@ namespace RockRE {
     }
 
     bool parse_empty(Node& node) {
+      (void) node;
       STATUS;
       if (sp_+1 == src_.length()) {
         PARSE_OK;
@@ -127,14 +128,16 @@ namespace RockRE {
       skip_sp();
       STATUS;
 
-      TEST(parse_head,    node);
-      TEST(parse_tail,    node);
+      TEST(parse_linehead, node);
+      TEST(parse_linetail, node);
+      TEST(parse_head,     node);
+      TEST(parse_tail,     node);
       STATUS;
-      TEST(parse_raw,     node);
+      TEST(parse_raw,      node);
       STATUS;
-      TEST(parse_capture, node);
-      TEST(parse_group,   node);
-      TEST(parse_anychar, node);
+      TEST(parse_capture,  node);
+      TEST(parse_group,    node);
+      TEST(parse_anychar,  node);
       return false;
     }
 
@@ -237,10 +240,50 @@ namespace RockRE {
     }
 
     // $$
-    bool parse_tail(Node& node)
+    bool parse_linetail(Node& node)
     {
       if (EXPECT(2, "$$")) {
+        node.type(RockRE::NODE_LINETAIL);
+        sp_+=2;
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    // $
+    bool parse_tail(Node& node)
+    {
+      if (EXPECT(1, "$")) {
         node.type(RockRE::NODE_TAIL);
+        sp_++;
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    // ^
+    bool parse_head(Node& node)
+    {
+      STATUS;
+      if (EXPECT(1, "^")) {
+        PARSE_OK;
+        node.type(RockRE::NODE_HEAD);
+        sp_++;
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    // ^^
+    bool parse_linehead(Node& node)
+    {
+      STATUS;
+      if (EXPECT(2, "^^")) {
+        PARSE_OK;
+        node.type(RockRE::NODE_LINEHEAD);
         sp_+=2;
         return true;
       } else {
@@ -249,32 +292,19 @@ namespace RockRE {
     }
 
     bool EXPECT(size_t n, const std::string s) {
-      if (src_.length() - sp_ < n) {
-#ifdef YY_DEBUG
-        printf("[EXPECT] skip: sp:%zu len: %lu, n:%zu, %s\n", sp_, src_.length(), n, s.c_str());
-#endif
-        return false;
-      } else {
-#ifdef YY_DEBUG
+      if ((long)src_.length() - (long)sp_ > 0 && src_.length() - sp_ >= n) {
+#ifdef VM_DEBUG
         printf("[EXPECT] sp:%zu %s\n", sp_, s.c_str());
 #endif
         return src_.substr(sp_, n) == s;
-      }
-    }
-
-    // ^^
-    bool parse_head(Node& node)
-    {
-      STATUS;
-      if (EXPECT(2, "^^")) {
-        PARSE_OK;
-        node.type(RockRE::NODE_HEAD);
-        sp_+=2;
-        return true;
       } else {
+#ifdef VM_DEBUG
+        printf("[EXPECT] skip: sp:%zu len: %lu, n:%zu, %s\n", sp_, src_.length(), n, s.c_str());
+#endif
         return false;
       }
     }
+
   };
 };
 

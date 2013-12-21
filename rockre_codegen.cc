@@ -10,6 +10,10 @@ const char* RockRE::op_name(OPType t)
   switch (t) {
   case OP_SPLIT:
     return "SPLIT";
+  case OP_LINEHEAD:
+    return "LINEHEAD";
+  case OP_LINETAIL:
+    return "LINETAIL";
   case OP_HEAD:
     return "HEAD";
   case OP_TAIL:
@@ -116,6 +120,12 @@ namespace RockRE {
         }
       case NODE_ANYCHAR:
         irep.emplace_back(OP_ANYCHAR);
+        return;
+      case NODE_LINEHEAD:
+        irep.emplace_back(OP_LINEHEAD);
+        return;
+      case NODE_LINETAIL:
+        irep.emplace_back(OP_LINETAIL);
         return;
       case NODE_HEAD:
         irep.emplace_back(OP_HEAD);
