@@ -125,7 +125,7 @@ START:
   }
 }
 
-bool RockRE::match(const std::string str, const Irep& irep, std::map<int,std::string> &captured)
+bool RockRE::partial_match(const std::string str, const Irep& irep, std::map<int,std::string> &captured)
 {
   int i = 0;
   while (i < str.length()) {
@@ -136,4 +136,9 @@ bool RockRE::match(const std::string str, const Irep& irep, std::map<int,std::st
     i += nanoutf8_next_size(str[0]);
   }
   return false;
+}
+
+bool RockRE::full_match(const std::string str, const Irep& irep, std::map<int,std::string> &captured)
+{
+  return m(str, irep, true, captured);
 }

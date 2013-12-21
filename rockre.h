@@ -112,7 +112,8 @@ namespace RockRE {
   const char* op_name(OPType t);
   void dump_irep(const Irep& irep);
 
-  bool match(const std::string str, const Irep& irep, std::map<int,std::string> &captured);
+  bool partial_match(const std::string str, const Irep& irep, std::map<int,std::string> &captured);
+  bool full_match(const std::string str, const Irep& irep, std::map<int,std::string> &captured);
 };
 
 #endif // ROCKRE_H_

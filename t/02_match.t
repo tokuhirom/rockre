@@ -5,7 +5,7 @@ use Test::Base::Less;
 use t::Util;
 
 for my $block (blocks) {
-    my $got = run_rockre('-r', $block->re, $block->str);
+    my $got = run_rockre('-p', $block->re, $block->str);
     $got =~ s/\n\z//;
     is($got, $block->expected, sprintf(qq{/%s/ =~ "%s"}, $block->re, $block->str));
 }
