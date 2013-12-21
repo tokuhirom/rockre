@@ -1,0 +1,26 @@
+#ifndef NANOUTF8_H_
+// License: Public domain.
+#include <stddef.h>
+
+/*
+    Range/Offset  0         1         2         3
+       0x00-0x7F  0xxxxxxx
+      0x80-0x3FF  110xxxxx  10xxxxxx
+    0x400-0xFFFF  1110xxxx  10xxxxxx  10xxxxxx
+0x10000-0x1FFFFF  11110xxx  10xxxxxx  10xxxxxx  10xxxxxx
+*/
+
+static size_t nanoutf8_next_size(char c) {
+  if ((c & 0x80) == 0x00)
+    return 1;
+  if ((c & 0xE0) == 0xC0)
+    return 2;
+  if ((c & 0xF0) == 0xE0)
+    return 3;
+  if ((c & 0xF8) == 0xF0)
+    return 4;
+
+  return 1;
+}
+
+#endif

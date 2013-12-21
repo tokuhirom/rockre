@@ -85,7 +85,7 @@ namespace RockRE {
           skip_sp();
           Node b;
           if (parse_pattern(b)) {
-            node = Node(NODE_OR, a, b);
+            node = Node(NODE_ALT, a, b);
             PARSE_OK;
             return true;
           } else {

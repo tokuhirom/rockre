@@ -32,7 +32,7 @@ void RockRE::Node::dump() const
   case RockRE::NODE_ANYCHAR:
     std::cout << "(anychar)";
     return;
-  case RockRE::NODE_OR:
+  case RockRE::NODE_ALT:
     this->dump_children("or");
     return;
   case RockRE::NODE_LIST:

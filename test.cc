@@ -42,9 +42,13 @@ int main(int argc, char** argv)
     if (dump_irep_mode) {
       dump_irep(irep);
     }
-    bool ret = RockRE::match(std::string(argv[n+1]), irep);
+    std::map<int, std::string> captured;
+    bool ret = RockRE::match(std::string(argv[n+1]), irep, captured);
     if (ret) {
       printf("OK\n");
+      for (auto kv: captured) {
+        std::cout << kv.first << ":" << kv.second << std::endl;
+      }
     } else {
       printf("FAIL\n");
     }

@@ -76,7 +76,7 @@ namespace RockRE {
           }
           return;
         }
-      case NODE_OR:
+      case NODE_ALT:
         {
           // a|b
           // 
@@ -125,13 +125,16 @@ namespace RockRE {
         return;
       case NODE_CAPTURE:
         {
-          irep.emplace_back(OP_SAVE);
-          irep.back().a(capture_no_);
+          int n = capture_no_;
           capture_no_++;
+
+          irep.emplace_back(OP_SAVE);
+          irep.back().a(n);
 
           gen(irep, node.children()[0]);
 
           irep.emplace_back(OP_MATCH);
+          irep.back().a(n);
 
           return;
         }

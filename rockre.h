@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <string>
 #include <vector>
+#include <map>
 
 namespace RockRE {
 
@@ -23,7 +24,7 @@ namespace RockRE {
   enum NodeType {
     NODE_UNDEF,
     NODE_LIST = 1,
-    NODE_OR,
+    NODE_ALT,
     NODE_TAIL,
     NODE_HEAD,
     NODE_STRING,
@@ -111,7 +112,7 @@ namespace RockRE {
   const char* op_name(OPType t);
   void dump_irep(const Irep& irep);
 
-  bool match(const std::string str, const Irep& irep);
+  bool match(const std::string str, const Irep& irep, std::map<int,std::string> &captured);
 };
 
 #endif // ROCKRE_H_

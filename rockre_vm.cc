@@ -3,10 +3,13 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <iostream>
+#include <map>
 #include "rockre.h"
+#include "nanoutf8.h"
 
 #define NEXT pc++; goto START
 #define JMP goto START
+/// #define VM_DEBUG
 
 // We should care the next branch
 #define FAIL \
@@ -47,10 +50,13 @@ namespace RockRE {
   };
 };
 
-static bool m(const std::string str, const Irep &irep, bool is_head, size_t pc)
+static bool m(const std::string str, const Irep &irep, bool is_head, std::map<int, std::string>& captured)
 {
   // string pointer
   size_t sp = 0;
+  size_t pc = 0;
+
+  std::map<int, size_t> saved;
 
   std::vector<Thread> threads;
 
@@ -60,17 +66,32 @@ START:
   switch (irep[pc].op()) {
   case OP_CHAR:
     if (str[sp] == irep[pc].c()) {
+#ifdef VM_DEBUG
+      printf("CHAR MATCH OK\n");
+#endif
       sp++;
       NEXT;
     } else {
+#ifdef VM_DEBUG
+      printf("CHAR MATCH FAIL sp:%zx, %x %x\n", sp, str[sp], irep[pc].c());
+#endif
       FAIL;
     }
   case OP_ANYCHAR:
-    if (str.length() > sp) {
-      sp++;
-      NEXT;
-    } else {
-      FAIL;
+    {
+      size_t n = nanoutf8_next_size(str[sp]);
+#ifdef VM_DEBUG
+      printf("%x %zu, %zu %zu\n", str[0], str.length(), sp, n);
+#endif
+      if (str.length() > sp + n-1) {
+#ifdef VM_DEBUG
+        printf("ANYCHAR MATCH\n");
+#endif
+        sp += n;
+        NEXT;
+      } else {
+        FAIL;
+      }
     }
   case OP_HEAD:
     // ^^
@@ -95,21 +116,24 @@ START:
   case OP_FINISH:
     return true;
   case OP_SAVE:
+    saved[irep[pc].a()] = sp;
     NEXT;
   case OP_MATCH:
+    int a = irep[pc].a();
+    captured[a] = str.substr(saved[a], sp - saved[a]);
     NEXT;
   }
 }
 
-bool RockRE::match(const std::string str, const Irep& irep)
+bool RockRE::match(const std::string str, const Irep& irep, std::map<int,std::string> &captured)
 {
   int i = 0;
   while (i < str.length()) {
-    bool r = m(str.substr(i), irep, i==0, 0);
+    bool r = m(str.substr(i), irep, i==0, captured);
     if (r) {
       return true;
     }
-    ++i;
+    i += nanoutf8_next_size(str[0]);
   }
   return false;
 }
