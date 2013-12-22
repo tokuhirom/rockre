@@ -50,7 +50,7 @@ namespace RockRE {
   };
 };
 
-static bool m(const std::string str, const Irep &irep, bool is_head, std::map<int, std::string>& captured)
+static bool m(const std::string str, const Irep &irep, bool is_head, std::map<int, std::string>& captured, bool from_linehead)
 {
   // string pointer
   size_t sp = 0;
@@ -97,7 +97,11 @@ START:
       }
     }
   case OP_LINEHEAD:
-    abort();
+    if (from_linehead || (is_head && sp == 0) || str[sp-1] == '\n') {
+      NEXT;
+    } else {
+      FAIL;
+    }
   case OP_LINETAIL:
     abort();
   case OP_HEAD:
@@ -134,7 +138,7 @@ bool RockRE::partial_match(const std::string str, const Irep& irep, std::map<int
 {
   size_t i = 0;
   while (i < str.length()) {
-    bool r = m(str.substr(i), irep, i==0, captured);
+    bool r = m(str.substr(i), irep, i==0, captured, i==0 || str[i-1]=='\n');
     if (r) {
       return true;
     }
@@ -145,5 +149,5 @@ bool RockRE::partial_match(const std::string str, const Irep& irep, std::map<int
 
 bool RockRE::full_match(const std::string str, const Irep& irep, std::map<int,std::string> &captured)
 {
-  return m(str, irep, true, captured);
+  return m(str, irep, true, captured, true);
 }

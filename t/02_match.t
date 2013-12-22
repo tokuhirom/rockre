@@ -6,9 +6,11 @@ use JKML::PP;
 
 for my $block (@{decode_jkml(do { local $/; <DATA> })}) {
     for my $case (@{$block->{cases}}) {
-      my $got = run_rockre('-p', $block->{re}, $case->{str});
+      my ($str, $expected) = @$case;
+      die "Str is undefined.." unless defined $str;
+      my $got = run_rockre('-p', $block->{re}, $str);
       $got =~ s/\n\z//;
-      is($got, $case->{expected}, sprintf(qq{/%s/ =~ "%s"}, $block->{re}, $case->{str}));
+      is($got, $expected ? 'OK' : 'FAIL', sprintf(qq{/%s/ =~ "%s"}, $block->{re}, $str));
     }
 }
 
@@ -19,178 +21,116 @@ __DATA__
   {
     re => 'a',
     cases => [
-      {
-        str => 'a',
-        expected => 'OK',
-      }
+      ['a', true],
     ]
   },
   {
     re => 'aa',
     cases => [
-      {
-        str => 'aa',
-        expected => 'OK',
-      }
+      ['aa', true],
+      ['a', false],
     ]
   },
   {
     re => 'bc',
     cases => [
-      {
-        str => 'abc',
-        expected => 'OK',
-      }
+      ['bc',  true],
+      ['abc', true],
+      ['abe', false],
     ],
   },
   {
     re => 'a',
     cases => [
-      {
-        str => 'b',
-        expected => 'FAIL',
-      }
+      ['a', true],
+      ['b', false],
     ],
   },
   {
     re => '^ a',
     cases => [
-      {
-        str => 'a',
-        expected => 'OK',
-      },
-      {
-        str => 'ba',
-        expected => 'FAIL',
-      }
+      ['a', true],
+      ['ba', false],
     ],
   },
   {
     re => 'a $',
     cases => [
-      {
-        str => 'ba',
-        expected => 'OK',
-      },
-      {
-        str => 'bao',
-        expected => 'FAIL',
-      }
+      ['ba',  true],
+      ['bao', false],
     ]
   },
   {
     re => 'a | b',
     cases => [
-      {
-        str => 'a',
-        expected => 'OK',
-      },
-      {
-        str => 'b',
-        expected => 'OK',
-      }
+      ['a', true],
+      ['b', true],
     ]
   },
   {
     re => '^ a | b',
     cases => [
-      {
-        str => 'oa',
-        expected => 'FAIL',
-      },
-      {
-        str => 'ao',
-        expected => 'OK',
-      },
-      {
-        str => 'ob',
-        expected => 'OK',
-      },
+      ['oa', false],
+      ['ao', true],
+      ['ob', true],
     ],
   },
   {
     re => 'a[b|c]',
     cases => [
-      {
-        str => 'ab',
-        expected => 'OK',
-      },
-      {
-        str => 'ac',
-        expected => 'OK',
-      },
-      {
-        str => 'a',
-        expected => 'FAIL',
-      },
-      {
-        str => 'aa',
-        expected => 'FAIL',
-      },
+      ['ab', true],
+      ['ac', true],
+      ['a',  false],
+      ['aa', false],
     ],
   },
   {
     re => 'a.',
     cases => [
-      {
-        str=> 'aa',
-        expected => 'OK',
-      },
-      {
-        str=> 'a',
-        expected => 'FAIL',
-      }
+      ['aa', true],
+      ['a',  false],
     ]
   },
   {
     re => 'a.c',
     cases => [
-      {
-        str => 'abc',
-        expected => 'OK',
-      },
+      ['abc', true],
+      ['ac',  false],
+      ['abe', false],
     ]
   },
   {
     re => 'hoa?',
     cases => [
-      {
-        str => 'hoa',
-        expected => 'OK',
-      },
-      {
-        str => 'ho',
-        expected => 'OK',
-      },
-      {
-        str => 'h',
-        expected => 'FAIL',
-      },
+      ['hoa', true],
+      ['ho',  true],
+      ['h',   false],
     ]
   },
   {
     re => '^ab*$',
     cases => [
-      {
-        str => 'a',
-        expected => 'OK',
-      },
-      {
-        str => 'ab',
-        expected => 'OK',
-      },
-      {
-        str => 'abb',
-        expected => 'OK',
-      },
-      {
-        str => 'abbb',
-        expected => 'OK',
-      },
-      {
-        str => 'abc',
-        expected => 'FAIL',
-      },
+      [ 'a',    true ],
+      [ 'ab',   true ],
+      [ 'abb',  true ],
+      [ 'abbb', true ],
+      [ 'abc',  false ],
+    ]
+  },
+  {
+    re => '^^a',
+    cases => [
+      [ <<-EOS,    true ],
+      ahoge
+      EOS
+      [ <<-EOS,    true ],
+      ooo
+      ahoge
+      ooo
+      EOS
+      [ <<-EOS,    false ],
+      oae
+      EOS
     ]
   },
 ]
