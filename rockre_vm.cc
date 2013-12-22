@@ -79,7 +79,7 @@ START:
     }
   case OP_ANYCHAR:
     {
-      size_t n = nanoutf8_next_size(str[sp]);
+      size_t n = nanoutf8_byte_count_from_first_char(str[sp]);
 #ifdef VM_DEBUG
       printf("%x %zu, %zu %zu\n", str[0], str.length(), sp, n);
 #endif
@@ -137,7 +137,7 @@ bool RockRE::partial_match(const std::string str, const Irep& irep, std::map<int
     if (r) {
       return true;
     }
-    i += nanoutf8_next_size(str[0]);
+    i += nanoutf8_byte_count_from_first_char(str[0]);
   }
   return false;
 }
