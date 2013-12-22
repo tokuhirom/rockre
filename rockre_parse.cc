@@ -139,6 +139,9 @@ namespace RockRE {
           } else if (EXPECT("*")) {
             node = Node(NODE_ASTER, node);
             return true;
+          } else if (EXPECT("+")) {
+            node = Node(NODE_PLUS, node);
+            return true;
           }
         }
         return true; // just term.

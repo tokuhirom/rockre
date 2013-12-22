@@ -9,7 +9,7 @@
 
 #define NEXT pc++; goto START
 #define JMP goto START
-/// #define VM_DEBUG
+// #define VM_DEBUG
 
 // We should care the next branch
 #define FAIL \
@@ -90,6 +90,9 @@ START:
         sp += n;
         NEXT;
       } else {
+#ifdef VM_DEBUG
+        printf("ANYCHAR MATCH FAIL\n");
+#endif
         FAIL;
       }
     }

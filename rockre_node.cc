@@ -65,6 +65,9 @@ void RockRE::Node::dump() const
   case NODE_ASTER: // *
     this->dump_children("*");
     return;
+  case NODE_PLUS: // +
+    this->dump_children("+");
+    return;
   }
   abort();
 }

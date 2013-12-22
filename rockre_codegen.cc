@@ -1,4 +1,5 @@
 #include "rockre.h"
+#include "nanoutf8.h"
 #include <stdlib.h>
 #include <iostream>
 #include <assert.h>
@@ -46,6 +47,14 @@ void RockRE::dump_irep(const Irep& irep)
     case OP_SPLIT:
       std::cout << " " << (int)c.a() << ", " << (int)c.b();
       break;
+    case OP_CHAR:
+      {
+        char buf[8];
+        size_t len = nanoutf8_encode(c.c(), buf);
+        buf[len] = '\0';
+        std::cout << " " << buf;
+        break;
+      }
     case OP_JMP:
       printf(" %d", c.a());
       break;
@@ -168,6 +177,26 @@ namespace RockRE {
           irep[split].a(label1 - label0);
           irep[split].b(label2 - label0);
           irep[jmp].a((int)label0 - (int)label2 + 1);
+          return;
+        }
+      case NODE_PLUS:
+        {
+          /**
+           * e+
+           *
+           * L1: e
+           *     SPLIT L1, L2
+           * L2:
+           */
+          // L1:
+          size_t label1 = irep.size();
+          gen(irep, node.children()[0]);
+          irep.emplace_back(OP_SPLIT);
+          auto split = irep.size()-1;
+          size_t label2 = irep.size();
+
+          irep[split].a(label1 - label2 + 1);
+          irep[split].b(1);
           return;
         }
       case NODE_ANYCHAR:
