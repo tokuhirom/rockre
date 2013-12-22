@@ -1,33 +1,47 @@
 use strict;
 use warnings;
 use Test::More;
-use Test::Base::Less;
 use t::Util;
+use JKML::PP;
 
-for my $block (blocks) {
-    my $got = run_rockre('-p', $block->re, $block->str);
-    $got =~ s/\n\z//;
-    my $expected = $block->expected;
-    $expected =~ s/\n+\z//;
-    is($got, $expected, sprintf(qq{/%s/ =~ "%s"}, $block->re, $block->str));
+for my $block (@{decode_jkml(do { local $/; <DATA> })}) {
+    for my $case (@{$block->{cases}}) {
+        my $got = run_rockre('-p', $block->{re}, $case->{str});
+        $got =~ s/\n\z//;
+        my $expected = $case->{expected};
+        $expected =~ s/\n+\z//;
+        is($got, $expected, sprintf(qq{/%s/ =~ "%s"}, $block->{re}, $case->{str}));
+    }
 }
 
 done_testing;
 
-__END__
-
-===
---- re:  a(..)d(...)
---- str: abcdefg
---- expected
-OK
-0:bc
-1:efg
-
-===
---- re:  a(.)u(.)o
---- str: aいuえo
---- expected
-OK
-0:い
-1:え
+__DATA__
+[
+    {
+        re => 'a(..)d(...)',
+        cases => [
+            {
+                str => r'abcdefg',
+                expected => <<-EOD
+                OK
+                0:bc
+                1:efg
+                EOD
+            }
+        ]
+    },
+    {
+        re => 'a(.)u(.)o',
+        cases => [
+            {
+                str => 'aいuえo',
+                expected => <<-EOD
+                OK
+                0:い
+                1:え
+                EOD
+            }
+        ],
+    },
+]

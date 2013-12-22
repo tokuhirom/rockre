@@ -1,4 +1,5 @@
 #include "rockre.h"
+#include "nanoutf8.h"
 #include <assert.h>
 
 #define TEST(test,node) \
@@ -105,13 +106,13 @@ namespace RockRE {
       }
     }
 
-    // terms = term term*
+    // terms = postfix postfix*
     bool parse_terms(Node& node) {
       Node a;
-      if (parse_term(a)) {
+      if (parse_postfix(a)) {
         STATUS;
         Node b;
-        while (parse_term(b)) {
+        while (parse_postfix(b)) {
           STATUS;
           if (a.type() != NODE_LIST) {
             a = Node(NODE_LIST, a);
@@ -125,9 +126,31 @@ namespace RockRE {
       }
     }
 
+    // postfix =
+    //     term
+    //   | term '?'
+    bool parse_postfix(Node& node) {
+      if (parse_term(node)) {
+        skip_sp();
+        if (rest() > 0 && EXPECT(1, "?")) {
+          sp_++;
+          node = Node(NODE_QUEST, node);
+          return true;
+        } else {
+          return true; // just term.
+        }
+      } else {
+        return false;
+      }
+    }
+
     bool parse_term(Node& node) {
       skip_sp();
       STATUS;
+
+      if (rest() == 0) {
+        return false;
+      }
 
       TEST(parse_linehead, node);
       TEST(parse_linetail, node);
@@ -185,35 +208,34 @@ namespace RockRE {
 
     bool parse_quote_body(Node& node, char close_char) {
       STATUS;
-      std::string buf;
+      node.type(NODE_LIST);
+
       while (src_.length() != sp_) {
         char ch = src_[sp_];
+        sp_++;
         if (ch == close_char) {
-          node = Node(NODE_QUOTE, buf);
           return true;
         } else if (ch == '\\') {
-          sp_++;
           if (rest() == 0) {
             goto FAIL;
           }
 
           switch (src_[sp_]) {
           case 't':
-            buf += '\t';
+            node.push_child(Node(NODE_CHAR, '\t'));
             sp_++;
             break;
           case 'n':
-            buf += '\n';
+            node.push_child(Node(NODE_CHAR, '\n'));
             sp_++;
             break;
           default:
-            buf += src_[sp_];
+            node.push_child(Node(NODE_CHAR, src_[sp_]));
             sp_++;
             break;
           }
         } else {
-          buf += ch;
-          sp_++;
+          node.push_child(Node(NODE_CHAR, ch));
         }
       }
       FAIL:
@@ -239,46 +261,42 @@ namespace RockRE {
     // ( \t | \. | [^.|)([]?.]_ )
     bool parse_raw(Node& node)
     {
-      std::string buf;
-      while (src_.length() != sp_) {
-        switch (src_[sp_]) {
-        case '\\':
-          switch (src_[sp_+1]) {
-          case 't':
-            buf += "\t";
-            sp_++; sp_++;
-            break;
-          default:
-            buf += src_[sp_+1];
-            sp_++; sp_++;
-            break;
-          }
-          break;
-        case '|':
-        case ')':
-        case '(':
-        case '[':
-        case ']':
-        case '?':
-        case '.':
-        case '^':
-        case '$':
-        case ' ':
-          goto DONE;
+      switch (src_[sp_]) {
+      case '\\':
+        switch (src_[sp_+1]) {
+        case 't':
+          node = Node(NODE_CHAR, '\t');
+          sp_++; sp_++;
+          return true;
         default:
-          buf += src_[sp_];
-          sp_++;
-          break;
+          node = Node(NODE_CHAR, src_[sp_+1]);
+          sp_++; sp_++;
+          return true;
         }
-      }
-      STATUS;
-      DONE:
-      if (buf.size() > 0) {
-        node.type(NODE_STRING);
-        node.string(buf);
-        return true;
-      } else {
+      case '|':
+      case ')':
+      case '(':
+      case '[':
+      case ']':
+      case '?':
+      case '.':
+      case '^':
+      case '$':
+      case ' ':
         return false;
+      default:
+        {
+          size_t len;
+          bool ok;
+          uint32_t ch = nanoutf8_peek_char(src_.c_str() + sp_, src_.length() - sp_, &len, &ok);
+          if (!ok) {
+            errstr_ = "Invalid utf-8 sequence";
+            return false;
+          }
+          node = Node(NODE_CHAR, ch);
+          sp_ += len;
+          return true;
+        }
       }
     }
 
@@ -346,8 +364,8 @@ namespace RockRE {
       }
     }
 
-    size_t rest() {
-      return src_.length() - sp_;
+    int rest() {
+      return (int)src_.length() - (int)sp_;
     }
 
     bool EXPECT(size_t n, const std::string s) {

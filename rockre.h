@@ -29,37 +29,35 @@ namespace RockRE {
     NODE_ALT,
     NODE_TAIL,
     NODE_HEAD,
-    NODE_STRING,
+    NODE_CHAR,
     NODE_CAPTURE,
     NODE_GROUP,
     NODE_ANYCHAR,
     NODE_LINETAIL,
     NODE_LINEHEAD,
-    NODE_QUOTE,
+    NODE_QUEST, // ? - one or zero
   };
 
   class Node {
     enum NodeType type_;
-    std::string string_;
+    uint32_t ch_;
     std::vector<Node> children_;
   public:
     Node(const Node &node)
       : type_(node.type_) {
-      string_ = node.string_;
+      ch_ = node.ch_;
       children_ = node.children_;
     }
     Node()
-      : type_(NODE_UNDEF), string_("") { }
+      : type_(NODE_UNDEF), ch_(0) { }
     Node(NodeType t)
-      : type_(t), string_("") { }
-    Node(NodeType t, std::string str)
-      : type_(t), string_(str) { }
-    Node(NodeType t, const char* s, size_t l)
-      : type_(t), string_(s, l) { }
+      : type_(t), ch_(0) { }
+    Node(NodeType t, uint32_t ch)
+      : type_(t), ch_(ch) { }
     Node(NodeType t, const Node& child)
       : type_(t) {
-          children_.push_back(child);
-      }
+      children_.push_back(child);
+    }
     Node(NodeType t, Node a, Node b)
       : type_(t) {
           children_.push_back(a);
@@ -71,11 +69,8 @@ namespace RockRE {
     void type(NodeType type) {
       type_ = type;
     }
-    const std::string string() const {
-      return string_;
-    }
-    void string(const std::string &s) {
-      string_ = s;
+    uint32_t ch() const {
+      return ch_;
     }
     const std::vector<Node>& children() const {
       return children_;

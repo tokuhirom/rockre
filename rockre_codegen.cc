@@ -65,14 +65,9 @@ namespace RockRE {
     void gen(Irep& irep, const Node& node)
     {
       switch (node.type()) {
-      case NODE_QUOTE:
-      case NODE_STRING:
-        {
-          for (const char& c: node.string()) {
-            irep.emplace_back(OP_CHAR, c);
-          }
-          return;
-        }
+      case NODE_CHAR:
+        irep.emplace_back(OP_CHAR, node.ch());
+        return;
       case NODE_GROUP:
       case NODE_LIST:
         {
@@ -117,6 +112,34 @@ namespace RockRE {
 
           irep[jmp_l3].a(label3 - label2 + 1);
 
+          return;
+        }
+      case NODE_QUEST:
+        {
+          /**
+           * e?
+           *
+           * L0:
+           *  SPLIT L1, L2
+           * L1:
+           *  e
+           * L2:
+           */
+          // L0:
+          size_t label0 = irep.size();
+          irep.emplace_back(OP_SPLIT);
+          auto split = irep.size()-1;
+
+          // L1:
+          size_t label1 = irep.size();
+          gen(irep, node.children()[0]);
+
+          // L2:
+          size_t label2 = irep.size();
+
+          // fix pos.
+          irep[split].a(label1 - label0);
+          irep[split].b(label2 - label0);
           return;
         }
       case NODE_ANYCHAR:

@@ -1,5 +1,6 @@
 #include "rockre.h"
 #include <iostream>
+#include "nanoutf8.h"
 
 void RockRE::Node::dump_children(const std::string name) const
 {
@@ -20,12 +21,17 @@ void RockRE::Node::dump() const
   case NODE_UNDEF:
     std::cout << "(undef)";
     return;
-  case NODE_QUOTE:
-    std::cout << "(quote \"" << string_ << "\")";
-    return;
-  case NODE_STRING:
-    std::cout << "(string \"" << string_ << "\")";
-    return;
+  case NODE_CHAR:
+    {
+      char buf[4];
+      size_t len = nanoutf8_encode(ch_, buf);
+      if (len) {
+        std::cout << "(char '" << std::string(buf, len) << "')";
+      } else {
+        std::cout << "(char invalid-char)";
+      }
+      return;
+    }
   case NODE_TAIL:
     std::cout << "(tail)";
     return;
@@ -42,7 +48,7 @@ void RockRE::Node::dump() const
     std::cout << "(anychar)";
     return;
   case NODE_ALT:
-    this->dump_children("or");
+    this->dump_children("alt");
     return;
   case NODE_LIST:
     this->dump_children("list");
@@ -52,6 +58,9 @@ void RockRE::Node::dump() const
     return;
   case NODE_CAPTURE:
     this->dump_children("capture");
+    return;
+  case NODE_QUEST: // ?
+    this->dump_children("quest");
     return;
   }
   abort();
