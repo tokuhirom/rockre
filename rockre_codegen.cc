@@ -78,16 +78,15 @@ namespace RockRE {
         }
       case NODE_ALT:
         {
-          // a|b
-          // 
-          // L0:
-          //   SPLIT L1, L2
-          // L1:
-          //   match a
-          //   JMP L3
-          // L2:
-          //   match b
-          // L3:
+          /**
+           * a|b
+           *
+           * L0: SPLIT L1, L2
+           * L1: a
+           *     JMP L3
+           * L2: b
+           * L3:
+           */
 
           size_t label0 = irep.size();
           irep.emplace_back(OP_SPLIT);
@@ -119,10 +118,8 @@ namespace RockRE {
           /**
            * e?
            *
-           * L0:
-           *  SPLIT L1, L2
-           * L1:
-           *  e
+           * L0: SPLIT L1, L2
+           * L1: e
            * L2:
            */
           // L0:
