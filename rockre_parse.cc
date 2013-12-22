@@ -133,12 +133,10 @@ namespace RockRE {
       if (parse_term(node)) {
         skip_sp();
         if (rest() > 0) {
-          if (EXPECT(1, "?")) {
-            sp_++;
+          if (EXPECT("?")) {
             node = Node(NODE_QUEST, node);
             return true;
-          } else if (rest() > 0 && EXPECT(1, "*")) {
-            sp_++;
+          } else if (EXPECT("*")) {
             node = Node(NODE_ASTER, node);
             return true;
           }
@@ -179,15 +177,12 @@ namespace RockRE {
     }
 
     bool parse_paren(Node& node, const char lparen, const char rparen, NodeType type) {
-      if (EXPECT(1, std::string(&lparen, 1))) {
-        sp_++;
-
+      if (EXPECT(std::string(&lparen, 1))) {
         Node body;
         parse_pattern(body);
         skip_sp();
-        if (EXPECT(1, std::string(&rparen, 1))) {
+        if (EXPECT(std::string(&rparen, 1))) {
           node = Node(type, body);
-          sp_++;
           PARSE_OK;
           return true;
         } else {
@@ -252,11 +247,9 @@ namespace RockRE {
     // quote = " quoted "
     bool parse_quote(Node& node) {
       STATUS;
-      if (EXPECT(1, "\"")) {
-        sp_++;
+      if (EXPECT("\"")) {
         return parse_quote_body(node, '\"');
-      } else if (EXPECT(1, "'")) {
-        sp_++;
+      } else if (EXPECT("'")) {
         return parse_quote_body(node, '\'');
       } else {
         return false;
@@ -308,9 +301,8 @@ namespace RockRE {
     // .
     bool parse_anychar(Node& node)
     {
-      if (EXPECT(1, ".")) {
+      if (EXPECT(".")) {
         node.type(NODE_ANYCHAR);
-        sp_++;
         return true;
       } else {
         return false;
@@ -320,9 +312,8 @@ namespace RockRE {
     // $$
     bool parse_linetail(Node& node)
     {
-      if (EXPECT(2, "$$")) {
+      if (EXPECT("$$")) {
         node.type(RockRE::NODE_LINETAIL);
-        sp_+=2;
         return true;
       } else {
         return false;
@@ -332,9 +323,8 @@ namespace RockRE {
     // $
     bool parse_tail(Node& node)
     {
-      if (EXPECT(1, "$")) {
+      if (EXPECT("$")) {
         node.type(RockRE::NODE_TAIL);
-        sp_++;
         return true;
       } else {
         return false;
@@ -345,10 +335,9 @@ namespace RockRE {
     bool parse_head(Node& node)
     {
       STATUS;
-      if (EXPECT(1, "^")) {
+      if (EXPECT("^")) {
         PARSE_OK;
         node.type(RockRE::NODE_HEAD);
-        sp_++;
         return true;
       } else {
         return false;
@@ -359,10 +348,9 @@ namespace RockRE {
     bool parse_linehead(Node& node)
     {
       STATUS;
-      if (EXPECT(2, "^^")) {
+      if (EXPECT("^^")) {
         PARSE_OK;
         node.type(RockRE::NODE_LINEHEAD);
-        sp_+=2;
         return true;
       } else {
         return false;
@@ -373,13 +361,19 @@ namespace RockRE {
       return (int)src_.length() - (int)sp_;
     }
 
-    bool EXPECT(size_t n, const std::string s) {
+    bool EXPECT(const std::string s) {
+      int n = s.length();
       assert((long)src_.length() - (long)sp_ >= 0);
-      if (src_.length() - sp_ >= n) {
+      if (rest() >= n) {
 #ifdef VM_DEBUG
         printf("[EXPECT] sp:%zu %s\n", sp_, s.c_str());
 #endif
-        return src_.substr(sp_, n) == s;
+        if (src_.substr(sp_, n) == s) {
+          sp_ += n;
+          return true;
+        } else {
+          return false;
+        }
       } else {
 #ifdef VM_DEBUG
         printf("[EXPECT] skip: sp:%zu len: %lu, n:%zu, %s\n", sp_, src_.length(), n, s.c_str());
