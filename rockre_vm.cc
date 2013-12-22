@@ -111,8 +111,6 @@ START:
       FAIL;
     }
     NEXT;
-  case OP_CAPTURE:
-    abort();
   case OP_JMP:
     pc += irep[pc].a();
     JMP;

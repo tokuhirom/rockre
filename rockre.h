@@ -11,7 +11,6 @@ namespace RockRE {
   enum OPType {
     OP_HEAD,
     OP_TAIL,
-    OP_CAPTURE,
     OP_SPLIT,
     OP_FINISH,
     OP_CHAR,

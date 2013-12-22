@@ -19,8 +19,6 @@ const char* RockRE::op_name(OPType t)
     return "HEAD";
   case OP_TAIL:
     return "TAIL";
-  case OP_CAPTURE:
-    return "CAPTURE";
   case OP_FINISH:
     return "FINISH";
   case OP_CHAR:
