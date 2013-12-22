@@ -168,5 +168,30 @@ __DATA__
       },
     ]
   },
+  {
+    re => '^ab*$',
+    cases => [
+      {
+        str => 'a',
+        expected => 'OK',
+      },
+      {
+        str => 'ab',
+        expected => 'OK',
+      },
+      {
+        str => 'abb',
+        expected => 'OK',
+      },
+      {
+        str => 'abbb',
+        expected => 'OK',
+      },
+      {
+        str => 'abc',
+        expected => 'FAIL',
+      },
+    ]
+  },
 ]
 

@@ -85,4 +85,8 @@ __DATA__
     input => 'あいう',
     expected => "(list (char 'あ') (char 'い') (char 'う'))",
   },
+  {
+    input => 'ab*',
+    expected => "(list (char 'a') (* (char 'b')))",
+  },
 ]

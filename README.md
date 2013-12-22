@@ -11,12 +11,12 @@ Perl6 compatible regular expresssion engine in C++
     [a|b] grouping
     ^     string head
     $     string tail
+    ?     one or zero
 
 ## Unsupported (yet) syntax
 
-    *
+    *     one or more
     +
-    ?
     *?
     +?
     ??

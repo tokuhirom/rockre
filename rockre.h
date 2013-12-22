@@ -36,6 +36,7 @@ namespace RockRE {
     NODE_LINETAIL,
     NODE_LINEHEAD,
     NODE_QUEST, // ? - one or zero
+    NODE_ASTER, // * - zero or more
   };
 
   class Node {
@@ -90,8 +91,8 @@ namespace RockRE {
   public:
     OPType op_;
     int c_;
-    uint8_t a_;
-    uint8_t b_;
+    int8_t a_;
+    int8_t b_;
   public:
     Code(OPType op)
       : op_(op), c_(0) { }
@@ -99,10 +100,10 @@ namespace RockRE {
       : op_(op), c_(c) { }
     OPType op() const { return op_; }
     char c() const { return c_; }
-    uint8_t a() const { return a_; }
-    uint8_t b() const { return b_; }
-    void a(uint8_t _) { a_ = _; }
-    void b(uint8_t _) { b_ = _; }
+    int8_t a() const { return a_; }
+    int8_t b() const { return b_; }
+    void a(int8_t _) { a_ = _; }
+    void b(int8_t _) { b_ = _; }
   };
 
   /* parser api */

@@ -132,13 +132,18 @@ namespace RockRE {
     bool parse_postfix(Node& node) {
       if (parse_term(node)) {
         skip_sp();
-        if (rest() > 0 && EXPECT(1, "?")) {
-          sp_++;
-          node = Node(NODE_QUEST, node);
-          return true;
-        } else {
-          return true; // just term.
+        if (rest() > 0) {
+          if (EXPECT(1, "?")) {
+            sp_++;
+            node = Node(NODE_QUEST, node);
+            return true;
+          } else if (rest() > 0 && EXPECT(1, "*")) {
+            sp_++;
+            node = Node(NODE_ASTER, node);
+            return true;
+          }
         }
+        return true; // just term.
       } else {
         return false;
       }
