@@ -103,7 +103,11 @@ START:
       FAIL;
     }
   case OP_LINETAIL:
-    abort();
+    if (sp == str.length() || str[sp] == '\n') {
+      NEXT;
+    } else {
+      FAIL;
+    }
   case OP_HEAD:
     // ^^
     if (sp != 0 || !is_head) {

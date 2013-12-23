@@ -133,5 +133,21 @@ __DATA__
       EOS
     ]
   },
+  {
+    re => 'a$$',
+    cases => [
+      [ <<-EOS,    true ],
+      hoga
+      EOS
+      [ <<-EOS,    true ],
+      ooo
+      hogea
+      ooo
+      EOS
+      [ <<-EOS,    false ],
+      oae
+      EOS
+    ]
+  },
 ]
 
