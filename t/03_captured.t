@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::More;
 use t::Util;
-use JKML::PP;
+use JKML;
 
 for my $block (@{decode_jkml(do { local $/; <DATA> })}) {
     for my $case (@{$block->{cases}}) {

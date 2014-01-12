@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::More;
 use t::Util;
-use JKML::PP;
+use JKML;
 
 for my $block (@{decode_jkml(do { local $/; <DATA> })}) {
     is(run_rockre($block->{input}), $block->{expected}, $block->{input});
