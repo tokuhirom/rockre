@@ -2,6 +2,7 @@
 #define ROCKRE_H_
 
 #include <stddef.h>
+#include <stdint.h>
 #include <string>
 #include <vector>
 #include <map>

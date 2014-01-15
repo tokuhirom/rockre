@@ -72,8 +72,10 @@ int main(int argc, char** argv)
           : RockRE::full_match(std::string(argv[n+1]), irep, captured);
       if (ret) {
         printf("OK\n");
-        for (auto kv: captured) {
-          std::cout << kv.first << ":" << kv.second << std::endl;
+        for (std::map<int, std::string>::iterator kv=captured.begin();
+            kv != captured.end();
+            ++kv) {
+          std::cout << kv->first << ":" << kv->second << std::endl;
         }
       } else {
         printf("FAIL\n");

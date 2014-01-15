@@ -39,22 +39,22 @@ void RockRE::dump_irep(const Irep& irep)
 {
   std::cout << "-- irep --" << std::endl;
   int i = 0;
-  for (auto c: irep) {
-    std::cout << i << " " <<  op_name(c.op());
-    switch (c.op()) {
+  for (std::vector<Code>::const_iterator c=irep.begin(); c!=irep.end(); c++) {
+    std::cout << i << " " <<  op_name(c->op());
+    switch (c->op()) {
     case OP_SPLIT:
-      std::cout << " " << (int)c.a() << ", " << (int)c.b();
+      std::cout << " " << (int)c->a() << ", " << (int)c->b();
       break;
     case OP_CHAR:
       {
         char buf[8];
-        size_t len = nanoutf8_encode(c.c(), buf);
+        size_t len = nanoutf8_encode(c->c(), buf);
         buf[len] = '\0';
         std::cout << " " << buf;
         break;
       }
     case OP_JMP:
-      printf(" %d", c.a());
+      printf(" %d", c->a());
       break;
     default:
       break; // nop
@@ -73,13 +73,15 @@ namespace RockRE {
     {
       switch (node.type()) {
       case NODE_CHAR:
-        irep.emplace_back(OP_CHAR, node.ch());
+        irep.push_back(Code(OP_CHAR, node.ch()));
         return;
       case NODE_GROUP:
       case NODE_LIST:
         {
-          for (auto child: node.children()) {
-            gen(irep, child);
+          for (std::vector<Node>::const_iterator child=node.children().begin();
+              child != node.children().end();
+              child++) {
+            gen(irep, *child);
           }
           return;
         }
@@ -96,14 +98,14 @@ namespace RockRE {
            */
 
           size_t label0 = irep.size();
-          irep.emplace_back(OP_SPLIT);
-          auto split = irep.size()-1;
+          irep.push_back(Code(OP_SPLIT));
+          ssize_t split = irep.size()-1;
 
           // L1:
           size_t label1 = irep.size();
           gen(irep, node.children()[0]);
-          irep.emplace_back(OP_JMP);
-          auto jmp_l3 = irep.size()-1;
+          irep.push_back(Code(OP_JMP));
+          ssize_t jmp_l3 = irep.size()-1;
 
           // L2:
           size_t label2 = irep.size();
@@ -131,8 +133,8 @@ namespace RockRE {
            */
           // L0:
           size_t label0 = irep.size();
-          irep.emplace_back(OP_SPLIT);
-          auto split = irep.size()-1;
+          irep.push_back(Code(OP_SPLIT));
+          ssize_t split = irep.size()-1;
 
           // L1:
           size_t label1 = irep.size();
@@ -159,14 +161,14 @@ namespace RockRE {
 
           // L0:
           size_t label0 = irep.size();
-          irep.emplace_back(OP_SPLIT);
-          auto split = irep.size()-1;
+          irep.push_back(Code(OP_SPLIT));
+          ssize_t split = irep.size()-1;
 
           // L1:
           size_t label1 = irep.size();
           gen(irep, node.children()[0]);
-          irep.emplace_back(OP_JMP);
-          auto jmp = irep.size()-1;
+          irep.push_back(Code(OP_JMP));
+          ssize_t jmp = irep.size()-1;
 
           // L2:
           size_t label2 = irep.size();
@@ -189,8 +191,8 @@ namespace RockRE {
           // L1:
           size_t label1 = irep.size();
           gen(irep, node.children()[0]);
-          irep.emplace_back(OP_SPLIT);
-          auto split = irep.size()-1;
+          irep.push_back(Code(OP_SPLIT));
+          ssize_t split = irep.size()-1;
           size_t label2 = irep.size();
 
           irep[split].a(label1 - label2 + 1);
@@ -198,31 +200,31 @@ namespace RockRE {
           return;
         }
       case NODE_ANYCHAR:
-        irep.emplace_back(OP_ANYCHAR);
+        irep.push_back(Code(OP_ANYCHAR));
         return;
       case NODE_LINEHEAD:
-        irep.emplace_back(OP_LINEHEAD);
+        irep.push_back(Code(OP_LINEHEAD));
         return;
       case NODE_LINETAIL:
-        irep.emplace_back(OP_LINETAIL);
+        irep.push_back(Code(OP_LINETAIL));
         return;
       case NODE_HEAD:
-        irep.emplace_back(OP_HEAD);
+        irep.push_back(Code(OP_HEAD));
         return;
       case NODE_TAIL:
-        irep.emplace_back(OP_TAIL);
+        irep.push_back(Code(OP_TAIL));
         return;
       case NODE_CAPTURE:
         {
           int n = capture_no_;
           capture_no_++;
 
-          irep.emplace_back(OP_SAVE);
+          irep.push_back(Code(OP_SAVE));
           irep.back().a(n);
 
           gen(irep, node.children()[0]);
 
-          irep.emplace_back(OP_MATCH);
+          irep.push_back(Code(OP_MATCH));
           irep.back().a(n);
 
           return;
@@ -247,6 +249,6 @@ void RockRE::codegen(const RockRE::Node& node, RockRE::Irep& irep)
 {
   CodeGenerator cg;
   cg.generate(irep, node);
-  irep.emplace_back(OP_FINISH);
+  irep.push_back(Code(OP_FINISH));
 }
 

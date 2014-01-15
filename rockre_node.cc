@@ -1,13 +1,14 @@
 #include "rockre.h"
 #include <iostream>
+#include <stdlib.h>
 #include "nanoutf8.h"
 
 void RockRE::Node::dump_children(const std::string name) const
 {
   std::cout << "(" << name << " ";
   size_t i = children_.size();
-  for (auto c: children_) {
-    c.dump();
+  for (std::vector<Node>::const_iterator c=children_.begin(); c != children_.end(); c++) {
+    c->dump();
     if (i-- != 1) {
       std::cout << " ";
     }

@@ -123,7 +123,7 @@ START:
     pc += irep[pc].a();
     JMP;
   case OP_SPLIT:
-    threads.emplace_back(sp, pc + irep[pc].b());
+    threads.push_back(Thread(sp, pc + irep[pc].b()));
     pc += irep[pc].a();
     JMP;
   case OP_FINISH:

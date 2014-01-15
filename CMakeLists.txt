@@ -2,8 +2,8 @@ cmake_minimum_required (VERSION 2.6)
 project (rockre)
 
 # -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wfloat-equal -Wpointer-arith
-SET(CMAKE_CXX_FLAGS_RELEASE "-std=c++11 -Wall -O2 -g -Wno-unused-parameter -Wno-unused-function -Wno-sign-compare")
-SET(CMAKE_CXX_FLAGS_DEBUG   "-std=c++11 -Wall -W -Wextra -Wno-unused-function -g -Werror")
+SET(CMAKE_CXX_FLAGS_RELEASE "-Wall -O2 -g -Wno-unused-parameter -Wno-unused-function -Wno-sign-compare")
+SET(CMAKE_CXX_FLAGS_DEBUG   "-Wall -W -Wextra -Wno-unused-function -g -Werror")
 SET(CMAKE_BUILD_TYPE Debug)
 
 SET(serial "0.0.1")
