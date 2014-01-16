@@ -129,6 +129,9 @@ namespace RockRE {
     // postfix =
     //     term
     //   | term '?'
+    //   | term '*'
+    //   | term '*?'
+    //   | term '+'
     bool parse_postfix(Node& node) {
       if (parse_term(node)) {
         skip_sp();

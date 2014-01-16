@@ -14,6 +14,8 @@ Perl6 compatible regular expresssion engine in C++
     ?     one or zero
     *     one or more
     +
+    ^^        line head
+    $$        line tail
 
 ## Unsupported (yet) syntax
 
@@ -22,8 +24,6 @@ Perl6 compatible regular expresssion engine in C++
     ??
     'quoted'
     .**2
-    ^^        line head
-    $$        line tail
 
 ## Implementation details
 
