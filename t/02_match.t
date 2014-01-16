@@ -118,6 +118,16 @@ __DATA__
     ]
   },
   {
+    re => '^ab+$',
+    cases => [
+      [ 'a',    false ],
+      [ 'ab',   true ],
+      [ 'abb',  true ],
+      [ 'abbb', true ],
+      [ 'abc',  false ],
+    ]
+  },
+  {
     re => '^^a',
     cases => [
       [ <<-EOS,    true ],

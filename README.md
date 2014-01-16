@@ -12,11 +12,11 @@ Perl6 compatible regular expresssion engine in C++
     ^     string head
     $     string tail
     ?     one or zero
+    *     one or more
+    +
 
 ## Unsupported (yet) syntax
 
-    *     one or more
-    +
     *?
     +?
     ??
