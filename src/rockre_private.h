@@ -38,6 +38,9 @@ namespace RockRE {
     NODE_QUEST, // ? - one or zero
     NODE_ASTER, // * - zero or more
     NODE_PLUS,  // + - one or more
+    NODE_ASTERQUEST, // *? - zero or more(non greedy)
+    NODE_PLUSQUEST,  // +? - one or more(non greedy)
+    NODE_QUESTQUEST, // ?? - one or zero(non greedy)
   };
 
   class Node {

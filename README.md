@@ -16,12 +16,12 @@ Perl6 compatible regular expresssion engine in C++
     +
     ^^        line head
     $$        line tail
+    *?        zero or more(non greedy)
+    +?        one or more(non greedy)
+    ??        one or zero(non greedy)
 
 ## Unsupported (yet) syntax
 
-    *?
-    +?
-    ??
     'quoted'
     .**2
     \d

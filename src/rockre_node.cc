@@ -63,11 +63,20 @@ void RockRE::Node::dump() const
   case NODE_QUEST: // ?
     this->dump_children("quest");
     return;
+  case NODE_QUESTQUEST: // ??
+    this->dump_children("??");
+    return;
   case NODE_ASTER: // *
     this->dump_children("*");
     return;
+  case NODE_ASTERQUEST: // *?
+    this->dump_children("*?");
+    return;
   case NODE_PLUS: // +
     this->dump_children("+");
+    return;
+  case NODE_PLUSQUEST: // +?
+    this->dump_children("+?");
     return;
   }
   abort();

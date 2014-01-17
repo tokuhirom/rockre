@@ -56,4 +56,76 @@ __DATA__
             }
         ],
     },
+    {
+        re => '<(.*)>',
+        cases => [
+            {
+                str => '<a><b><c>',
+                expected => <<-EOD
+                OK
+                0:a><b><c
+                EOD
+            }
+        ],
+    },
+    {
+        re => '<(.*?)>',
+        cases => [
+            {
+                str => '<a><b><c>',
+                expected => <<-EOD
+                OK
+                0:a
+                EOD
+            }
+        ],
+    },
+    {
+        re => '<(.+)>',
+        cases => [
+            {
+                str => '<a><b><c>',
+                expected => <<-EOD
+                OK
+                0:a><b><c
+                EOD
+            }
+        ],
+    },
+    {
+        re => '<(.+?)>',
+        cases => [
+            {
+                str => '<a><b><c>',
+                expected => <<-EOD
+                OK
+                0:a
+                EOD
+            }
+        ],
+    },
+    {
+        re => '(.?)',
+        cases => [
+            {
+                str => 'a',
+                expected => <<-EOD
+                OK
+                0:a
+                EOD
+            }
+        ],
+    },
+    {
+        re => '(.??)',
+        cases => [
+            {
+                str => 'a',
+                expected => <<-EOD
+                OK
+                0:
+                EOD
+            }
+        ],
+    },
 ]

@@ -55,6 +55,9 @@ int main(int argc, char** argv)
       if (!rrr) {
         printf("Syntax error: %s\n", rockre_errstr(rr));
       }
+      if (dump_irep_mode) {
+        rockre_dump_irep(rr, rrr);
+      }
       rockre_region* region = rockre_region_new(rr);
       bool ret;
       char *str = argv[n+1];

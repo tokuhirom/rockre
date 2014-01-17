@@ -30,6 +30,7 @@ void rockre_region_destroy(rockre*, rockre_region*);
 bool rockre_partial_match(rockre*, rockre_regexp*, rockre_region*, const char* str, size_t str_len);
 bool rockre_full_match(rockre*, rockre_regexp*, rockre_region*, const char* str, size_t str_len);
 bool rockre_dump_node(rockre* r, const char* regexp, size_t regexp_len);
+void rockre_dump_irep(rockre* r, rockre_regexp* rr);
 
 #ifdef __cplusplus
 };

@@ -136,11 +136,20 @@ namespace RockRE {
       if (parse_term(node)) {
         skip_sp();
         if (rest() > 0) {
-          if (EXPECT("?")) {
+          if (EXPECT("??")) {
+            node = Node(NODE_QUESTQUEST, node);
+            return true;
+          } else if (EXPECT("?")) {
             node = Node(NODE_QUEST, node);
+            return true;
+          } else if (EXPECT("*?")) {
+            node = Node(NODE_ASTERQUEST, node);
             return true;
           } else if (EXPECT("*")) {
             node = Node(NODE_ASTER, node);
+            return true;
+          } else if (EXPECT("+?")) {
+            node = Node(NODE_PLUSQUEST, node);
             return true;
           } else if (EXPECT("+")) {
             node = Node(NODE_PLUS, node);

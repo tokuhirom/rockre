@@ -148,6 +148,32 @@ namespace RockRE {
           irep[split].b(label2 - label0);
           return;
         }
+      case NODE_QUESTQUEST:
+        {
+          /**
+           * e??
+           *
+           * L0: SPLIT L2, L1
+           * L1: e
+           * L2:
+           */
+          // L0:
+          size_t label0 = irep.size();
+          irep.push_back(Code(OP_SPLIT));
+          ssize_t split = irep.size()-1;
+
+          // L1:
+          size_t label1 = irep.size();
+          gen(irep, node.children()[0]);
+
+          // L2:
+          size_t label2 = irep.size();
+
+          // fix pos.
+          irep[split].a(label2 - label0);
+          irep[split].b(label1 - label0);
+          return;
+        }
       case NODE_ASTER: // *
         {
           /**
@@ -179,6 +205,37 @@ namespace RockRE {
           irep[jmp].a((int)label0 - (int)label2 + 1);
           return;
         }
+      case NODE_ASTERQUEST: // *?
+        {
+          /**
+           * e*?
+           *
+           * L0: SPLIT L2, L1
+           * L1: e
+           *     jmp L0
+           * L2:
+           */
+
+          // L0:
+          size_t label0 = irep.size();
+          irep.push_back(Code(OP_SPLIT));
+          ssize_t split = irep.size()-1;
+
+          // L1:
+          size_t label1 = irep.size();
+          gen(irep, node.children()[0]);
+          irep.push_back(Code(OP_JMP));
+          ssize_t jmp = irep.size()-1;
+
+          // L2:
+          size_t label2 = irep.size();
+
+          // fix pos.
+          irep[split].a(label2 - label0);
+          irep[split].b(label1 - label0);
+          irep[jmp].a((int)label0 - (int)label2 + 1);
+          return;
+        }
       case NODE_PLUS:
         {
           /**
@@ -197,6 +254,26 @@ namespace RockRE {
 
           irep[split].a(label1 - label2 + 1);
           irep[split].b(1);
+          return;
+        }
+      case NODE_PLUSQUEST:
+        {
+          /**
+           * e+?
+           *
+           * L1: e
+           *     SPLIT L2, L1
+           * L2:
+           */
+          // L1:
+          size_t label1 = irep.size();
+          gen(irep, node.children()[0]);
+          irep.push_back(Code(OP_SPLIT));
+          ssize_t split = irep.size()-1;
+          size_t label2 = irep.size();
+
+          irep[split].a(1);
+          irep[split].b(label1 - label2 + 1);
           return;
         }
       case NODE_ANYCHAR:

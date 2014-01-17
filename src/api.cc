@@ -99,3 +99,9 @@ bool rockre_dump_node(rockre* r, const char* regexp, size_t regexp_len)
   return true;
 }
 
+void rockre_dump_irep(rockre* r, rockre_regexp* rr)
+{
+  (void) r;
+  RockRE::dump_irep(rr->irep);
+}
+
