@@ -24,6 +24,10 @@ Perl6 compatible regular expresssion engine in C++
     ??
     'quoted'
     .**2
+    \d
+    \s
+    \S
+    \N
 
 ## Implementation details
 

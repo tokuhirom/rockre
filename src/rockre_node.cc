@@ -1,4 +1,4 @@
-#include "rockre.h"
+#include "rockre_private.h"
 #include <iostream>
 #include <stdlib.h>
 #include "nanoutf8.h"

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <map>
-#include "rockre.h"
+#include "rockre_private.h"
 #include "nanoutf8.h"
 
 #define NEXT pc++; goto START
@@ -50,7 +50,7 @@ namespace RockRE {
   };
 };
 
-static bool m(const std::string str, const Irep &irep, bool is_head, std::map<int, std::string>& captured, bool from_linehead)
+static bool m(const std::string str, const Irep &irep, int offset, std::vector< std::pair<int,int> >& captured, bool from_linehead)
 {
   // string pointer
   size_t sp = 0;
@@ -97,7 +97,7 @@ START:
       }
     }
   case OP_LINEHEAD:
-    if (from_linehead || (is_head && sp == 0) || str[sp-1] == '\n') {
+    if (from_linehead || (offset==0 && sp == 0) || str[sp-1] == '\n') {
       NEXT;
     } else {
       FAIL;
@@ -110,7 +110,7 @@ START:
     }
   case OP_HEAD:
     // ^^
-    if (sp != 0 || !is_head) {
+    if (sp != 0 || offset != 0) {
       FAIL;
     }
     NEXT;
@@ -133,16 +133,22 @@ START:
     NEXT;
   case OP_MATCH:
     int a = irep[pc].a();
-    captured[a] = str.substr(saved[a], sp - saved[a]);
+    captured[a] = std::make_pair(saved[a] + offset, sp + offset);
     NEXT;
   }
 }
 
-bool RockRE::partial_match(const std::string str, const Irep& irep, std::map<int,std::string> &captured)
+bool RockRE::partial_match(const std::string str, const Irep& irep, std::vector< std::pair<int,int> > &captured)
 {
+  for (Irep::const_iterator iter = irep.begin(); iter != irep.end(); ++iter) {
+    if (iter->op() == OP_SAVE) {
+      captured.resize(captured.size() + 1);
+    }
+  }
+
   size_t i = 0;
   while (i < str.length()) {
-    bool r = m(str.substr(i), irep, i==0, captured, i==0 || str[i-1]=='\n');
+    bool r = m(str.substr(i), irep, i, captured, i==0 || str[i-1]=='\n');
     if (r) {
       return true;
     }
@@ -151,7 +157,7 @@ bool RockRE::partial_match(const std::string str, const Irep& irep, std::map<int
   return false;
 }
 
-bool RockRE::full_match(const std::string str, const Irep& irep, std::map<int,std::string> &captured)
+bool RockRE::full_match(const std::string str, const Irep& irep, std::vector< std::pair<int,int> > &captured)
 {
-  return m(str, irep, true, captured, true);
+  return m(str, irep, 0, captured, true);
 }

@@ -1,5 +1,5 @@
-#ifndef ROCKRE_H_
-#define ROCKRE_H_
+#ifndef ROCKRE_PRIVATE_H_
+#define ROCKRE_PRIVATE_H_
 
 #include <stddef.h>
 #include <stdint.h>
@@ -114,8 +114,8 @@ namespace RockRE {
   const char* op_name(OPType t);
   void dump_irep(const Irep& irep);
 
-  bool partial_match(const std::string str, const Irep& irep, std::map<int,std::string> &captured);
-  bool full_match(const std::string str, const Irep& irep, std::map<int,std::string> &captured);
+  bool partial_match(const std::string str, const Irep& irep, std::vector< std::pair<int,int> > &captured);
+  bool full_match(const std::string str, const Irep& irep, std::vector< std::pair<int,int> > &captured);
 };
 
-#endif // ROCKRE_H_
+#endif // ROCKRE_PRIVATE_H_

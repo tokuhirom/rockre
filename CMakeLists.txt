@@ -1,19 +1,22 @@
 cmake_minimum_required (VERSION 2.6)
 project (rockre)
 
+include_directories("include")
+
 # -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wfloat-equal -Wpointer-arith
 SET(CMAKE_CXX_FLAGS_RELEASE "-Wall -O2 -g -Wno-unused-parameter -Wno-unused-function -Wno-sign-compare")
 SET(CMAKE_CXX_FLAGS_DEBUG   "-Wall -W -Wextra -Wno-unused-function -g -Werror")
+SET(CMAKE_C_FLAGS   "-std=c99 -Wall -W -Wextra -Wno-unused-function -g -Werror")
 SET(CMAKE_BUILD_TYPE Debug)
 
 SET(serial "0.0.1")
 SET(soserial "1")
 
-SET(SRCS rockre_node.cc rockre_codegen.cc rockre_vm.cc rockre_parse.cc)
+SET(SRCS src/rockre_node.cc src/rockre_codegen.cc src/rockre_vm.cc src/rockre_parse.cc src/api.cc)
 
-add_library(rockre STATIC ${SRCS})
+add_library(rockre SHARED ${SRCS})
 
-add_executable(test_rockre rockre test.cc)
+add_executable(test_rockre test.c)
 target_link_libraries(test_rockre rockre)
 
 add_custom_target(test DEPENDS test_rockre SOURCES ${SRCS} COMMAND prove -v t/*.t) 

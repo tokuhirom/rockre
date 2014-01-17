@@ -1,4 +1,4 @@
-#include "rockre.h"
+#include "rockre_private.h"
 #include <stdlib.h>
 #include <string.h>
 

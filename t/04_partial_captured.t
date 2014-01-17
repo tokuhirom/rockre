@@ -44,16 +44,4 @@ __DATA__
             }
         ],
     },
-    {
-        re => 'oa(.)dd',
-        cases => [
-            {
-                str => 'xooaedd',
-                expected => <<-EOD
-                OK
-                0:e
-                EOD
-            }
-        ],
-    },
 ]
