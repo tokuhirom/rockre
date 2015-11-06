@@ -33,6 +33,12 @@ Perl6 compatible regular expresssion engine in C++
 
 Current version of RockRE supports naive NFA engine.
 
+## HACKING TIPS
+
+Run tests with verbose output.
+
+    make test ARGS="-V"
+
 ## See also
 
   * [S05](https://raw.github.com/perl6/specs/master/S05-regex.pod)

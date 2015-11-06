@@ -5,3 +5,5 @@
 /CMakeFiles/
 /cmake_install.cmake
 /librockre.a
+/CTestTestfile.cmake
+/Testing/
