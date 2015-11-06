@@ -136,6 +136,7 @@ START:
     captured[a] = std::make_pair(saved[a] + offset, sp + offset);
     NEXT;
   }
+  abort();
 }
 
 bool RockRE::partial_match(const std::string str, const Irep& irep, std::vector< std::pair<int,int> > &captured)
