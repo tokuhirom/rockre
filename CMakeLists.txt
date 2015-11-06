@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 2.6)
 project (rockre)
 
+enable_testing()
+
 include_directories("include")
 
 # -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wfloat-equal -Wpointer-arith
@@ -19,5 +21,6 @@ add_library(rockre SHARED ${SRCS})
 add_executable(test_rockre test.c)
 target_link_libraries(test_rockre rockre)
 
-add_custom_target(test DEPENDS test_rockre SOURCES ${SRCS} COMMAND prove -v t/*.t) 
+add_test(NAME prove COMMAND prove)
+add_custom_target(prove DEPENDS test_rockre)
 
