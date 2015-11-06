@@ -17,6 +17,8 @@ SET(soserial "1")
 SET(SRCS src/rockre_node.cc src/rockre_codegen.cc src/rockre_vm.cc src/rockre_parse.cc src/api.cc)
 
 add_library(rockre SHARED ${SRCS})
+ADD_LIBRARY(rockre-static STATIC ${SRCS})
+SET_TARGET_PROPERTIES(rockre-static PROPERTIES OUTPUT_NAME "rockre")
 
 add_executable(test_rockre test.c)
 target_link_libraries(test_rockre rockre)
