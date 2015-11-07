@@ -84,7 +84,6 @@ namespace RockRE {
       if (parse_terms(a)) {
         skip_sp();
         if (EXPECT("||")) {
-          sp_++; sp_++;
           skip_sp();
           Node b;
           if (parse_pattern(b)) {
