@@ -31,7 +31,7 @@ const char* rockre_errstr(rockre* r)
   return r->errstr;
 }
 
-rockre_regexp* rockre_compile(rockre* r, const char*regexp, size_t regexp_len)
+rockre_regexp* rockre_compile(rockre* r, const char*regexp, size_t regexp_len, bool capture_body)
 {
   RockRE::Node node;
   std::string errstr;
@@ -39,6 +39,10 @@ rockre_regexp* rockre_compile(rockre* r, const char*regexp, size_t regexp_len)
     r->errstr = strdup(errstr.c_str());
   }
   r->regexp_objects.resize(r->regexp_objects.size() + 1);
+
+  if (capture_body) {
+    node = RockRE::Node(RockRE::NODE_CAPTURE, node);
+  }
 
   rockre_regexp* rrr = &(r->regexp_objects.back());
   RockRE::codegen(node, rrr->irep);

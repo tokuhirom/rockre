@@ -23,7 +23,7 @@ typedef struct rockre_region {
 
 rockre* rockre_new();
 void rockre_destroy(rockre*);
-rockre_regexp* rockre_compile(rockre*, const char*regexp, size_t regexp_len);
+rockre_regexp* rockre_compile(rockre* r, const char*regexp, size_t regexp_len, bool capture_body);
 const char* rockre_errstr(rockre*);
 rockre_region* rockre_region_new(rockre*);
 void rockre_region_destroy(rockre*, rockre_region*);

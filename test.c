@@ -51,7 +51,7 @@ int main(int argc, char** argv)
   case NEED_MATCH:
     {
       rockre* rr = rockre_new();
-      rockre_regexp* rrr = rockre_compile(rr, regexp, strlen(regexp));
+      rockre_regexp* rrr = rockre_compile(rr, regexp, strlen(regexp), false);
       if (!rrr) {
         printf("Syntax error: %s\n", rockre_errstr(rr));
       }
