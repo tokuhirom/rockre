@@ -76,6 +76,14 @@ __DATA__
     ],
   },
   {
+    re => '^ <[a b]> $',
+    cases => [
+      ['o', false],
+      ['a', true],
+      ['b', true],
+    ],
+  },
+  {
     re => 'a[b||c]',
     cases => [
       ['ab', true],

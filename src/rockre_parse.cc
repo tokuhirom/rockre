@@ -91,7 +91,7 @@ namespace RockRE {
             PARSE_OK;
             return true;
           } else {
-            errstr_ = "Missing pattern after |";
+            errstr_ = "Missing pattern after ||";
             return false;
           }
         } else {
@@ -176,6 +176,7 @@ namespace RockRE {
       TEST(parse_quote,    node);
       STATUS;
       STATUS;
+      TEST(parse_char_class,node);
       TEST(parse_capture,  node);
       TEST(parse_group,    node);
       TEST(parse_anychar,  node);
@@ -220,16 +221,44 @@ namespace RockRE {
       return parse_paren(node, '(', ')', NODE_CAPTURE);
     }
 
-    bool parse_quote_body(Node& node, char close_char) {
+    // char_class = <[ chars ]>
+    bool parse_char_class(Node& node) {
+      STATUS;
+      if (EXPECT("<[")) {
+        skip_sp();
+        node = Node(NODE_ALT);
+        while (rest() > 0) {
+          skip_sp();
+          if (EXPECT("]>")) {
+            PARSE_OK;
+            return true;
+          } else if (EXPECT("\\")) {
+            if (rest() == 0) {
+              errstr_ = "Unexpected end-of-string in character class";
+              return false;
+            }
+            node.push_child(Node(NODE_CHAR, src_[sp_]));
+            sp_++;
+          } else {
+            char ch = src_[sp_];
+            sp_++;
+            node.push_child(Node(NODE_CHAR, ch));
+          }
+        }
+        return false;
+      } else {
+        return false;
+      }
+    }
+
+    bool parse_quote_body(Node& node, std::string close_char) {
       STATUS;
       node.type(NODE_LIST);
 
       while (src_.length() != sp_) {
-        char ch = src_[sp_];
-        sp_++;
-        if (ch == close_char) {
+        if (EXPECT(close_char)) {
           return true;
-        } else if (ch == '\\') {
+        } else if (EXPECT("\\")) {
           if (rest() == 0) {
             goto FAIL;
           }
@@ -249,6 +278,9 @@ namespace RockRE {
             break;
           }
         } else {
+          char ch = src_[sp_];
+          sp_++;
+
           node.push_child(Node(NODE_CHAR, ch));
         }
       }
@@ -262,9 +294,9 @@ namespace RockRE {
     bool parse_quote(Node& node) {
       STATUS;
       if (EXPECT("\"")) {
-        return parse_quote_body(node, '\"');
+        return parse_quote_body(node, "\"");
       } else if (EXPECT("'")) {
-        return parse_quote_body(node, '\'');
+        return parse_quote_body(node, "\'");
       } else {
         return false;
       }

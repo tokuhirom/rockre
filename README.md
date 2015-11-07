@@ -5,10 +5,10 @@ Perl6 compatible regular expresssion engine in C++
 
 ## Supported syntax
 
-    a|b   alternative
+    a||b   alternative
     .     anychar
     (a)   capture
-    [a|b] grouping
+    [a||b] grouping
     ^     string head
     $     string tail
     ?     one or zero
@@ -19,6 +19,7 @@ Perl6 compatible regular expresssion engine in C++
     *?        zero or more(non greedy)
     +?        one or more(non greedy)
     ??        one or zero(non greedy)
+    <[ ]>     character class
 
 ## Unsupported (yet) syntax
 
