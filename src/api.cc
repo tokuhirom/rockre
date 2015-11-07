@@ -59,10 +59,10 @@ void rockre_region_destroy(rockre* r, rockre_region* rrr)
 {
   (void) r;
   if (rrr->beg) {
-    delete rrr->beg;
+    delete []rrr->beg;
   }
   if (rrr->end) {
-    delete rrr->end;
+    delete []rrr->end;
   }
   return;
 }
