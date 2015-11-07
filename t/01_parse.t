@@ -54,19 +54,19 @@ __DATA__
     expected => "(list (linehead) (char 'a') (char 'a') (char 'a'))",
   },
   {
-    input => 'aaa|bbb',
+    input => 'aaa||bbb',
     expected => "(alt (list (char 'a') (char 'a') (char 'a')) (list (char 'b') (char 'b') (char 'b')))",
   },
   {
-    input => 'a|b|c',
+    input => 'a||b||c',
     expected => "(alt (char 'a') (alt (char 'b') (char 'c')))",
   },
   {
-    input => '( aaa | bbb )',
+    input => '( aaa || bbb )',
     expected => "(capture (alt (list (char 'a') (char 'a') (char 'a')) (list (char 'b') (char 'b') (char 'b'))))",
   },
   {
-    input => '[ aaa | bbb ]',
+    input => '[ aaa || bbb ]',
     expected => "(group (alt (list (char 'a') (char 'a') (char 'a')) (list (char 'b') (char 'b') (char 'b'))))",
   },
   {

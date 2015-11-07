@@ -6,6 +6,13 @@
 #include <stdbool.h>
 #include <alloca.h>
 
+/*
+ * full match:
+ *
+ *   make && ./test_rockre -f 'a[c]' 'a'
+ *
+ */
+
 enum MATCHING_STATE {
   COMPILE_ONLY,
   NEED_MATCH,
@@ -60,7 +67,12 @@ int main(int argc, char** argv)
       }
       rockre_region* region = rockre_region_new(rr);
       bool ret;
+      if (argc <= n+1) {
+          fprintf(stderr, "missing argument\n");
+          return EXIT_FAILURE;
+      }
       char *str = argv[n+1];
+      assert(str);
       if (matching_type == PARTIAL_MATCH) {
         ret = rockre_partial_match(rr, rrr, region, str, strlen(str));
       } else {

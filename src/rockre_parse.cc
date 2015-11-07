@@ -75,7 +75,7 @@ namespace RockRE {
       return false;
     }
 
-    // pattern = terms - | - pattern
+    // pattern = terms - || - pattern
     // pattern = terms
     bool parse_pattern(Node& node) {
       STATUS;
@@ -83,8 +83,8 @@ namespace RockRE {
       Node a;
       if (parse_terms(a)) {
         skip_sp();
-        if (src_[sp_] == '|') {
-          sp_++;
+        if (src_[sp_] == '|' && src_[sp_+1] == '|') {
+          sp_++; sp_++;
           skip_sp();
           Node b;
           if (parse_pattern(b)) {

@@ -61,14 +61,14 @@ __DATA__
     ]
   },
   {
-    re => 'a | b',
+    re => 'a || b',
     cases => [
       ['a', true],
       ['b', true],
     ]
   },
   {
-    re => '^ a | b',
+    re => '^ a || b',
     cases => [
       ['oa', false],
       ['ao', true],
@@ -76,7 +76,7 @@ __DATA__
     ],
   },
   {
-    re => 'a[b|c]',
+    re => 'a[b||c]',
     cases => [
       ['ab', true],
       ['ac', true],
