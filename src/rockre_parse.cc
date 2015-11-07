@@ -94,6 +94,9 @@ namespace RockRE {
             errstr_ = "Missing pattern after ||";
             return false;
           }
+        } else if (EXPECT("|")) {
+          errstr_ = "Longest match operator '|' is not supported yet.";
+          return false;
         } else {
           // Just terms.
           node = a;

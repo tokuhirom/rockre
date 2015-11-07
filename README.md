@@ -30,6 +30,8 @@ Perl6 compatible regular expresssion engine in C++
     \S
     \N
 
+    a | b     longest match
+
 ## Implementation details
 
 Current version of RockRE supports naive NFA engine.
