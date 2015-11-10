@@ -26,6 +26,6 @@ SET_TARGET_PROPERTIES(rockre-static PROPERTIES OUTPUT_NAME "rockre")
 add_executable(test_rockre test.c)
 target_link_libraries(test_rockre rockre)
 
-add_test(NAME prove COMMAND prove)
-add_custom_target(prove DEPENDS test_rockre)
+add_test(NAME rockre-prove COMMAND prove)
+add_custom_target(rockre-prove DEPENDS test_rockre)
 
