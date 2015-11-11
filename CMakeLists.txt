@@ -6,9 +6,12 @@ enable_testing()
 include_directories("include")
 
 # -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wfloat-equal -Wpointer-arith
-SET(CMAKE_CXX_FLAGS_RELEASE "-Wall -O2 -g -Wno-unused-parameter -Wno-unused-function -Wno-sign-compare -fPIC")
-SET(CMAKE_CXX_FLAGS_DEBUG   "-Wall -W -Wextra -Wno-unused-function -g -Werror -fPIC")
-SET(CMAKE_C_FLAGS   "-std=c99 -Wall -W -Wextra -Wno-unused-function -g -Werror -fPIC")
+if(!WIN32)
+	SET(SUPPORT_PIC, "-fPIC")
+endif()
+SET(CMAKE_CXX_FLAGS_RELEASE "-Wall -O2 -g -Wno-unused-parameter -Wno-unused-function -Wno-sign-compare ${SUPPORT_PIC}")
+SET(CMAKE_CXX_FLAGS_DEBUG   "-Wall -W -Wextra -Wno-unused-function -g -Werror ${SUPPORT_PIC}")
+SET(CMAKE_C_FLAGS   "-std=c99 -Wall -W -Wextra -Wno-unused-function -g -Werror ${SUPPORT_PIC}")
 SET(CMAKE_BUILD_TYPE Debug)
 
 SET(serial "0.0.1")

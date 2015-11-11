@@ -4,7 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#ifndef _WIN32
 #include <alloca.h>
+#endif
 
 /*
  * full match:
