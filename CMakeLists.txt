@@ -6,7 +6,9 @@ enable_testing()
 include_directories("include")
 
 # -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wfloat-equal -Wpointer-arith
-if(!WIN32)
+if (WIN32)
+else()
+    message(STATUS "non windows system")
 	SET(SUPPORT_PIC, "-fPIC")
 endif()
 SET(CMAKE_CXX_FLAGS_RELEASE "-Wall -O2 -g -Wno-unused-parameter -Wno-unused-function -Wno-sign-compare ${SUPPORT_PIC}")
